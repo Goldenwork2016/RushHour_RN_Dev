@@ -7,12 +7,14 @@ const LoadingContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
 `;
 
 const LoadingText = styled.Text`
   width: 230px;
   text-align: center;
   font-size: ${props => props.theme.fontSizes.caption};
+  color: ${props => props.theme.colors.text.dark};
 `;
 
 const LoadingImage = styled.Image`

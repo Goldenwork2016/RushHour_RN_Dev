@@ -20,6 +20,7 @@ const HeadingContainer = styled.View`
 const Title = styled.Text`
   font-size: ${props => props.theme.fontSizes.h5};
   font-weight: ${props => props.theme.fontWeights.bold};
+  color: ${props => props.theme.colors.text.dark};
 `;
 
 const Group = styled.View`
@@ -92,7 +93,7 @@ const Register = ({navigation}) => {
           )}
         </Group>
 
-        <OnTouch onPress={() => navigation.navigate('Profile')}>
+        <OnTouch onPress={() => null}>
           <SubmitButton resizeMode="cover">
             <ButtonText>Sign Up</ButtonText>
           </SubmitButton>

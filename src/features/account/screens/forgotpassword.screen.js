@@ -12,6 +12,7 @@ import {
 const Title = styled.Text`
   font-size: ${props => props.theme.fontSizes.h5};
   font-weight: ${props => props.theme.fontWeights.bold};
+  color: ${props => props.theme.colors.text.dark};
 `;
 
 const ResetLabel = styled.Text`
