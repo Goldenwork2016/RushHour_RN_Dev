@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-// import {Ionicons} from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
+import {colors} from '../../../infrastructure/theme/colors';
 import ImputForm from '../../../components/form-control/InputFormComponent';
 import {
   MainContiner,
@@ -53,8 +54,8 @@ const ResetPassword = ({navigation}) => {
             secureTextEntry={newSecureTextEntry}
             onChangeText={text => setConfirmPassword(text)}
           />
-          {/* {newSecureTextEntry ? (
-            <Ionicons
+          {newSecureTextEntry ? (
+            <Icon
               onPress={() => setNewSecureTextEntry(false)}
               name="eye-sharp"
               size={20}
@@ -62,14 +63,14 @@ const ResetPassword = ({navigation}) => {
               style={{position: 'absolute', right: 15, top: 48}}
             />
           ) : (
-            <Ionicons
+            <Icon
               onPress={() => setNewSecureTextEntry(true)}
               name="eye-off"
               size={20}
               color={colors.text.secondary}
               style={{position: 'absolute', right: 15, top: 48}}
             />
-          )} */}
+          )}
         </Group>
         <Group>
           <ImputForm
@@ -81,8 +82,8 @@ const ResetPassword = ({navigation}) => {
             secureTextEntry={secureTextEntry}
             onChangeText={text => setNewPassword(text)}
           />
-          {/* {secureTextEntry ? (
-            <Ionicons
+          {secureTextEntry ? (
+            <Icon
               onPress={() => setSecureTextEntry(false)}
               name="eye-sharp"
               size={20}
@@ -90,14 +91,14 @@ const ResetPassword = ({navigation}) => {
               style={{position: 'absolute', right: 15, top: 48}}
             />
           ) : (
-            <Ionicons
+            <Icon
               onPress={() => setSecureTextEntry(true)}
               name="eye-off"
               size={20}
               color={colors.text.secondary}
               style={{position: 'absolute', right: 15, top: 48}}
             />
-          )} */}
+          )}
         </Group>
 
         <OnTouch onPress={() => navigation.navigate('SignIn')}>

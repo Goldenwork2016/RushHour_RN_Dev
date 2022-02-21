@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Image} from 'react-native';
 //import {Ionicons} from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {colors} from '../../../infrastructure/theme/colors';
 import ImputForm from '../../../components/form-control/InputFormComponent';
@@ -114,8 +115,8 @@ const Login = ({navigation}) => {
                 value={password}
                 onChangeText={text => setPassword(text)}
               />
-              {/* {secureTextEntry ? (
-                <Ionicons
+              {secureTextEntry ? (
+                <Icon
                   onPress={() => setSecureTextEntry(false)}
                   name="eye-sharp"
                   size={20}
@@ -127,7 +128,7 @@ const Login = ({navigation}) => {
                   }}
                 />
               ) : (
-                <Ionicons
+                <Icon
                   onPress={() => setSecureTextEntry(true)}
                   name="eye-off"
                   size={20}
@@ -138,7 +139,7 @@ const Login = ({navigation}) => {
                     top: 48,
                   }}
                 />
-              )} */}
+              )}
             </Group>
             <ForgetPassword>
               <OnTouch onPress={() => navigation.navigate('ForgotPassword')}>
@@ -146,8 +147,8 @@ const Login = ({navigation}) => {
               </OnTouch>
             </ForgetPassword>
             <CheckboxContainer>
-              {/* {checked ? (
-                <Ionicons
+              {checked ? (
+                <Icon
                   name="checkbox-outline"
                   size={22}
                   color={colors.brand.primary}
@@ -156,7 +157,7 @@ const Login = ({navigation}) => {
                   }}
                 />
               ) : (
-                <Ionicons
+                <Icon
                   name="square-outline"
                   size={22}
                   color={colors.text.secondary}
@@ -164,7 +165,7 @@ const Login = ({navigation}) => {
                     setChecked(!checked);
                   }}
                 />
-              )} */}
+              )}
 
               <CheckboxLabel>I agree to the terms and conditions</CheckboxLabel>
             </CheckboxContainer>
