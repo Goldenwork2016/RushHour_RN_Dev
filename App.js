@@ -4,7 +4,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'styled-components/native';
@@ -13,7 +13,8 @@ import Navigation from './src/infrastructure/navigation';
 import Loading from './src/components/loading/LoadingComponent';
 
 const App = () => {
-  const [isLoad, setIsLoad] = React.useState(false);
+  const [isLoad, setIsLoad] = useState(false);
+  const [user, setUser] = useState(true);
 
   setTimeout(() => {
     setIsLoad(true);
@@ -22,7 +23,7 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <ThemeProvider theme={theme}>
-        {isLoad ? <Navigation /> : <Loading />}
+        {isLoad ? <Navigation user={user} /> : <Loading />}
         <StatusBar style="auto" />
       </ThemeProvider>
     </SafeAreaProvider>
