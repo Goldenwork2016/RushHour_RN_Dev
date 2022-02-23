@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import styled from 'styled-components/native';
 
 export const MainContiner = styled.View`

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import ImputForm from '../../../components/form-control/InputFormComponent';
