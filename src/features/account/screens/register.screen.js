@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -93,9 +96,9 @@ const Register = ({navigation}) => {
           )}
         </Group>
 
-        <OnTouch onPress={() => null}>
+        <OnTouch onPress={() => navigation.navigate('SignupChatbot')}>
           <SubmitButton resizeMode="cover">
-            <ButtonText>Sign Up</ButtonText>
+            <ButtonText >Sign Up</ButtonText>
           </SubmitButton>
         </OnTouch>
       </AuthContainer>
