@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 export const fonts = {
   body: 'Lato_400Regular_Italic',
   heading: 'Lato_700Bold ',
