@@ -8,8 +8,8 @@ import React, {useState, useCallback} from 'react';
 import {colors} from '../../../infrastructure/theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import ImagePicker, {openCamera} from 'react-native-image-crop-picker';
-// import * as ImagePicker from 'react-native-image-picker';
+// import ImagePicker, {openCamera} from 'react-native-image-crop-picker';
+import * as ImagePicker from 'react-native-image-picker';
 import styled from 'styled-components/native';
 import InputForm from '../../../components/form-control/InputFormComponent';
 // import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -26,57 +26,57 @@ const SignupChatbot = ({navigation}) => {
     margin-bottom: ${props => props.theme.space[3]};
   `;
 
-//   const onImageLibraryPress = useCallback(() => {
-//     const options = {
-//       selectionLimit: 1,
-//       mediaType: 'photo',
-//       includeBase64: false,
-//     };
-//     ImagePicker.launchImageLibrary(options, setPickerResponse,);
-//     setStep(2);
-//   }, []);
+  const onImageLibraryPress = useCallback(() => {
+    const options = {
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+    };
+    ImagePicker.launchImageLibrary(options, setPickerResponse,);
+    setStep(2);
+  }, []);
 
-//   const onCameraPress = useCallback(() => {
-//     const options = {
-//       saveToPhotos: true,
-//       mediaType: 'photo',
-//       includeBase64: false,
-//     };
-//     ImagePicker.launchCamera(options, setPickerResponse);
-//     setStep(2);
-//   }, []);
+  const onCameraPress = useCallback(() => {
+    const options = {
+      saveToPhotos: true,
+      mediaType: 'photo',
+      includeBase64: false,
+    };
+    ImagePicker.launchCamera(options, setPickerResponse);
+    setStep(2);
+  }, []);
 
   const uri = pickerResponse?.assets && pickerResponse.assets[0].uri;
 //   console.log(uri);
-  const takePhotoFromCamera = () => {
-    ImagePicker.openCamera({
-      compressImageMaxWidth: 300,
-      compressImageMaxHeight: 300,
-      cropping: true,
-      compressImageQuality: 0.7,
-      //   includeBase64: true,
-      multiple: false,
-    }).then(image => {
-      console.log(image.path);
-      setProfilePic(image.path);
-      //   alert(image.path.toString());
-        // console.log(image.mime);
-        // setImageMime(image.mime);
-      setStep(2);
-    });
-  };
-  const choosePhotoFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      compressImageQuality: 0.7,
-    }).then(image => {
-      console.log(image);
-      setProfilePic(image.path);
-      setStep(2);
-    });
-  };
+  // const takePhotoFromCamera = () => {
+  //   ImagePicker.openCamera({
+  //     compressImageMaxWidth: 300,
+  //     compressImageMaxHeight: 300,
+  //     cropping: true,
+  //     compressImageQuality: 0.7,
+  //     //   includeBase64: true,
+  //     multiple: false,
+  //   }).then(image => {
+  //     console.log(image.path);
+  //     setProfilePic(image.path);
+  //     //   alert(image.path.toString());
+  //       // console.log(image.mime);
+  //       // setImageMime(image.mime);
+  //     setStep(2);
+  //   });
+  // };
+  // const choosePhotoFromLibrary = () => {
+  //   ImagePicker.openPicker({
+  //     width: 300,
+  //     height: 300,
+  //     cropping: true,
+  //     compressImageQuality: 0.7,
+  //   }).then(image => {
+  //     console.log(image);
+  //     setProfilePic(image.path);
+  //     setStep(2);
+  //   });
+  // };
   return (
     // <ScrollView contentContainerStyle={styles.container}>
     <View style={styles.container}>
@@ -101,7 +101,7 @@ const SignupChatbot = ({navigation}) => {
             <Text />
           </View>
           <View style={styles.botContainer}>
-            <Text style={{fontSize: 14, fontWeight: '400'}}>
+            <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
               Hey John, lets start by creating your personal drivers profile.
             </Text>
           </View>
@@ -112,7 +112,7 @@ const SignupChatbot = ({navigation}) => {
             style={styles.imageAvatar}
           />
           <View style={styles.botContainer}>
-            <Text style={{fontSize: 14, fontWeight: '400'}}>
+            <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
               Lets start by getting a picture of you
             </Text>
           </View>
@@ -123,7 +123,7 @@ const SignupChatbot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
                   <View style={{width: 200,  height: 100}}>
-                     <Image source={{uri: profilePic }} width= {'100%'} height={'100%'} resizeMode="cover"/>
+                     <Image source={{uri: uri }} width= {'100%'} height={'100%'} resizeMode="cover"/>
                   </View>
                 {/* // <Image source={require('../../../../assets/userupload.png')} /> */}
             </View>
@@ -131,7 +131,7 @@ const SignupChatbot = ({navigation}) => {
             <View style={styles.botContainerWithAvatar}>
               <Image source={profilePic} style={styles.imageAvatar} />
               <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400'}}>
+                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
                   What is your speaking language?
                 </Text>
               </View>
@@ -153,7 +153,7 @@ const SignupChatbot = ({navigation}) => {
                 style={styles.imageAvatar}
               />
               <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400'}}>
+                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
                   What is your home address?
                 </Text>
               </View>
@@ -176,7 +176,7 @@ const SignupChatbot = ({navigation}) => {
                 style={styles.imageAvatar}
               />
               <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400'}}>
+                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
                   When is your birthday??
                 </Text>
               </View>
@@ -195,16 +195,16 @@ const SignupChatbot = ({navigation}) => {
           }}>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.toolContainer}>
-              <TouchableOpacity onPress={takePhotoFromCamera}>
+              <TouchableOpacity onPress={onCameraPress}>
                 <Icon name="camera-outline" size={20} />
               </TouchableOpacity>
-              <Text>Take Picture</Text>
+              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Take Picture</Text>
             </View>
             <View style={styles.toolContainer}>
-              <TouchableOpacity onPress={() => choosePhotoFromLibrary()}>
+              <TouchableOpacity onPress={onImageLibraryPress}>
                 <Icon name="image-outline" size={20} />
               </TouchableOpacity>
-              <Text>Gallery</Text>
+              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Gallery</Text>
             </View>
           </View>
         </View>
@@ -224,7 +224,7 @@ const SignupChatbot = ({navigation}) => {
                 setLanguage('English');
                 setStep(3);
               }}>
-              <Text>English</Text>
+              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>English</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnContainer}
@@ -232,7 +232,7 @@ const SignupChatbot = ({navigation}) => {
                 setLanguage('Spanish');
                 setStep(3);
               }}>
-              <Text>Spanish</Text>
+              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Spanish</Text>
             </TouchableOpacity>
             <View
               style={styles.btnContainer}
@@ -241,7 +241,7 @@ const SignupChatbot = ({navigation}) => {
                 setStep(3);
               }}>
               <TouchableOpacity>
-                <Text>Russian</Text>
+                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Russian</Text>
               </TouchableOpacity>
             </View>
           </View>
