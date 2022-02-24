@@ -1,20 +1,29 @@
 import React from 'react';
-import {View, Platform} from 'react-native';
+import {View, Platform, Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Text} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import styled from 'styled-components/native';
 
 import DashboardScreen from '../../features/dashboard/screens/dashboard.screen';
 import MessageScreen from '../../features/messaging/screens/message.screen';
 import OrderScreen from '../../features/orders/screens/order.screen';
+import HosScreen from '../../features/hos/screens/hos.screen';
 
 const TAB_ICON = {
-  Orders: 'list-outline',
-  Messages: 'send-outline',
+  Orders: require('../../../assets/order.png'),
+  Messages: require('../../../assets/message.png'),
   Voice: 'mic-outline',
-  Hos: 'time-outline',
-  Dashboard: 'apps-outline',
+  Hos: require('../../../assets/hos.png'),
+  Dashboard: require('../../../assets/dashboard.png'),
 };
+
+const ImageIcon = styled.Image`
+  width: 24px;
+  height: 24px;
+`;
+
+const isIos = Platform.OS === 'ios';
 
 function Voice() {
   return (
@@ -28,12 +37,39 @@ function Voice() {
 function Hos() {
   return (
     <>
-      <Text>map Details HOc</Text>
+      <Text>setting Details Voice</Text>
       <Icon name="md-checkmark-circle" size={32} color="green" />
     </>
   );
 }
 
+const Microphone = () => {
+  return (
+    <View
+      // eslint-disable-next-line react-native/no-inline-styles
+      style={{
+        backgroundColor: '#F4F6FB',
+        borderRadius: 40,
+        borderWidth: 1,
+        borderColor: '#ECEFF8',
+        marginTop: !isIos ? -8 : 0,
+      }}>
+      <Icon
+        name="mic-outline"
+        size={24}
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          color: '#3BC2DE',
+          width: isIos ? 51 : 40,
+          height: isIos ? 56 : 42,
+          alignContent: 'center',
+          marginTop: isIos ? 20 : 12,
+          marginLeft: isIos ? 28 : 15,
+        }}
+      />
+    </View>
+  );
+};
 //const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -57,51 +93,75 @@ const createTabOptions = ({route}) => ({
 const TabNavigator = () => {
   return (
     <Tab.Navigator screenOptions={createTabOptions}>
-      <Tab.Screen name="Orders" component={OrderScreen} />
-      <Tab.Screen name="Messages" component={MessageScreen} />
+      <Tab.Screen
+        name="Orders"
+        component={OrderScreen}
+        options={({route}) => ({
+          title: 'Orders',
+          headerTitleStyle: {
+            alignSelf: 'center',
+            fontWeight: 'bold',
+            fontSize: 24,
+          },
+          tabBarIcon: () => <ImageIcon source={TAB_ICON.Orders} />,
+        })}
+      />
+      <Tab.Screen
+        name="Messages"
+        component={MessageScreen}
+        options={({route}) => ({
+          title: 'Messaging',
+          headerTitleStyle: {
+            alignSelf: 'center',
+            fontWeight: 'bold',
+            fontSize: 24,
+          },
+          tabBarIcon: () => <ImageIcon source={TAB_ICON.Messages} />,
+        })}
+      />
       <Tab.Screen
         name="Voice"
         component={Voice}
         options={({route}) => ({
           title: '',
-          headerTitleStyle: {alignSelf: 'center'},
-          tabBarIcon: ({color, size}) => (
-            <View
-              style={{
-                backgroundColor: '#F4F6FB',
-                borderRadius: 40,
-                borderWidth: 1,
-                borderColor: '#ECEFF8',
-              }}>
-              <Icon
-                name="mic-outline"
-                color={color}
-                size={24}
-                style={{
-                  color: '#3BC2DE',
-                  width: 51,
-                  height: 56,
-                  alignContent: 'center',
-                  marginTop: 20,
-                  marginLeft: 28,
-                }}
-              />
-            </View>
-          ),
+          headerTitleStyle: {
+            alignSelf: 'center',
+            fontWeight: 'bold',
+            fontSize: 24,
+          },
+          tabBarIcon: ({color, size}) => <Microphone />,
           tabBarActiveTintColor: '#90C862',
           headerTitleAlign: 'center',
         })}
       />
-      <Tab.Screen name="Hos" component={Hos} options={{title: 'HOS'}} />
+      <Tab.Screen
+        name="Hos"
+        component={HosScreen}
+        options={() => ({
+          title: 'HOS',
+          headerTitleStyle: {
+            alignSelf: 'center',
+            fontWeight: 'bold',
+            fontSize: 24,
+          },
+          tabBarIcon: () => <ImageIcon source={TAB_ICON.Hos} />,
+        })}
+      />
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
-        options={{
+        options={({route}) => ({
           title: 'Dashboard',
           headerStyle: {
             backgroundColor: '#F4F6FB',
           },
-        }}
+          headerTitleStyle: {
+            alignSelf: 'center',
+            fontWeight: 'bold',
+            fontSize: 24,
+          },
+          tabBarIcon: () => <ImageIcon source={TAB_ICON.Dashboard} />,
+        })}
       />
     </Tab.Navigator>
   );

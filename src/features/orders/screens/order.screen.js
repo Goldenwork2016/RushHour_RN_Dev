@@ -3,6 +3,7 @@ import {View, Text, FlatList, Image} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import {colors} from '../../../infrastructure/theme/colors';
 import OrderList from '../components/orderlist.component';
 
 const MainContainer = styled.View``;
@@ -15,7 +16,9 @@ const SearchBarContainer = styled.View`
   padding-left: ${props => props.theme.space[3]};
   padding-right: ${props => props.theme.space[3]};
 `;
-const SearchInput = styled.TextInput`
+const SearchInput = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
   width: 100%;
   height: 40px;
   padding-top: 10px;
@@ -34,7 +37,7 @@ const SearchIcon = styled(Icon)`
   color: #4cb75c;
   font-size: 18px;
 `;
-const ChatContainer = styled.View`
+const OrderListContainer = styled.View`
   background-color: ${props => props.theme.colors.bg.primary};
 `;
 
@@ -42,7 +45,8 @@ const ChatListView = styled(FlatList).attrs({
   paddingLeft: 32,
   paddingRight: 32,
   paddingTop: 32,
-  paddingBottom: 32,
+  paddingBottom: 100,
+  paddingMargin: 100,
 })``;
 
 const OrderScreen = () => {
@@ -62,12 +66,14 @@ const OrderScreen = () => {
           <SearchIcon name="search" onPress={onChangeSearch} />
         </SearchBarContainer>
       </Lockbackground>
-      <ChatContainer>
+      <OrderListContainer>
         <ChatListView
+          ListFooterComponent={<View />}
+          ListFooterComponentStyle={{height: 150}}
           data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
           renderItem={item => <OrderList item={item} />}
         />
-      </ChatContainer>
+      </OrderListContainer>
     </MainContainer>
   );
 };

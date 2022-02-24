@@ -3,13 +3,13 @@ import {View, Text, FlatList, Image} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {space} from '../../../infrastructure/theme/spacing';
 import {colors} from '../../../infrastructure/theme/colors';
-import UserList from '../components/userlist.component';
 
 const MainContainer = styled.View``;
+export const Lockbackground = styled.ImageBackground.attrs({
+  source: require('../../../../assets/search-bg.png'),
+})``;
 const SearchBarContainer = styled.View`
-  background-color: ${props => props.theme.colors.bg.tertiary};
   padding-top: ${props => props.theme.space[2]};
   padding-bottom: ${props => props.theme.space[2]};
   padding-left: ${props => props.theme.space[3]};
@@ -40,38 +40,28 @@ const ChatContainer = styled.View`
   background-color: ${props => props.theme.colors.bg.primary};
 `;
 
-const ChatListView = styled(FlatList).attrs({
-  paddingLeft: 32,
-  paddingRight: 32,
-  paddingTop: 32,
-  paddingBottom: 32,
-})``;
-
-const MessageScreen = () => {
+const HosScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const onChangeSearch = query => setSearchQuery(query);
 
   return (
     <MainContainer>
-      <SearchBarContainer>
-        <SearchInput
-          placeholder="Search user"
-          value={searchQuery}
-          onChangeText={onChangeSearch}
-        />
-        <SearchIcon name="search" onPress={onChangeSearch} />
-      </SearchBarContainer>
+      <Lockbackground>
+        <SearchBarContainer>
+          <SearchInput
+            placeholder="1km"
+            value={searchQuery}
+            onChangeText={onChangeSearch}
+          />
+          <SearchIcon name="search" onPress={onChangeSearch} />
+        </SearchBarContainer>
+      </Lockbackground>
       <ChatContainer>
-        <ChatListView
-          ListFooterComponent={<View />}
-          ListFooterComponentStyle={{height: 150}}
-          data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
-          renderItem={(item, index) => <UserList item={item} index={index} />}
-        />
+        <Text>hello me</Text>
       </ChatContainer>
     </MainContainer>
   );
 };
 
-export default MessageScreen;
+export default HosScreen;
