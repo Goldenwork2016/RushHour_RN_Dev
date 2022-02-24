@@ -1,6 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-native/no-inline-styles */
-
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {Image} from 'react-native';
