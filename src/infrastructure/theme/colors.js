@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 export const colors = {
   brand: {
     primary: '#4CB75C',
