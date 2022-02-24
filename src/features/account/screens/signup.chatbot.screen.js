@@ -3,80 +3,89 @@
 /* eslint-disable no-unused-vars */
 // /* eslint-disable */
 
-import {StyleSheet, Text, View, Image, ImageBackground} from 'react-native';
-import React, {useState, useCallback} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  Platform,
+} from 'react-native';
+import React, {useState, useCallback, useEffect} from 'react';
 import {colors} from '../../../infrastructure/theme/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-// import ImagePicker, {openCamera} from 'react-native-image-crop-picker';
-import * as ImagePicker from 'react-native-image-picker';
-import styled from 'styled-components/native';
+import ImagePicker from 'react-native-image-crop-picker';
 import InputForm from '../../../components/form-control/InputFormComponent';
-// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Moment from 'moment';
+import {Slider} from 'react-native-elements';
+import PickPicture from '../components/chatbot/choosepicture';
+import SelectButton from '../components/chatbot/select.button';
+import ToolContainer from '../components/chatbot/bottom.tool.container';
+import BotChatBubble from '../components/chatbot/botChatBubble';
+import UserChatBubble from '../components/chatbot/userChatBubble';
 
 const SignupChatbot = ({navigation}) => {
   const [profilePic, setProfilePic] = useState(null);
-  const [imageMime, setImageMime] = useState(null);
   const [steps, setStep] = useState(1);
   const [language, setLanguage] = useState('English');
   const [address, setAddress] = useState('');
-//   const [response, setResponse] = useState(null);
-  const [pickerResponse, setPickerResponse] = useState(null);
-  const Group = styled.View`
-    margin-bottom: ${props => props.theme.space[3]};
-  `;
+  const [phone, setPhone] = useState('');
+  const [date, setDate] = useState(new Date(1996, 11, 7));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [value, setValue] = useState(1);
 
-  const onImageLibraryPress = useCallback(() => {
-    const options = {
-      selectionLimit: 1,
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setStep(5);
+  };
+
+  const showMode = currentMode => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  // useEffect(() => {
+  //   // fetchCat();
+  //   // fetchProduct();
+  // }, []);
+
+  const takePhotoFromCamera = () => {
+    ImagePicker.openCamera({
+      compressImageMaxWidth: 300,
+      compressImageMaxHeight: 300,
+      cropping: true,
+      compressImageQuality: 0.7,
+      //   includeBase64: true,
+      multiple: false,
+    }).then(async image => {
+      // console.log(image.path);
+      setProfilePic(image.path);
+      setStep(2);
+    });
+  };
+  const choosePhotoFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
       mediaType: 'photo',
-      includeBase64: false,
-    };
-    ImagePicker.launchImageLibrary(options, setPickerResponse,);
-    setStep(2);
-  }, []);
-
-  const onCameraPress = useCallback(() => {
-    const options = {
-      saveToPhotos: true,
-      mediaType: 'photo',
-      includeBase64: false,
-    };
-    ImagePicker.launchCamera(options, setPickerResponse);
-    setStep(2);
-  }, []);
-
-  const uri = pickerResponse?.assets && pickerResponse.assets[0].uri;
-//   console.log(uri);
-  // const takePhotoFromCamera = () => {
-  //   ImagePicker.openCamera({
-  //     compressImageMaxWidth: 300,
-  //     compressImageMaxHeight: 300,
-  //     cropping: true,
-  //     compressImageQuality: 0.7,
-  //     //   includeBase64: true,
-  //     multiple: false,
-  //   }).then(image => {
-  //     console.log(image.path);
-  //     setProfilePic(image.path);
-  //     //   alert(image.path.toString());
-  //       // console.log(image.mime);
-  //       // setImageMime(image.mime);
-  //     setStep(2);
-  //   });
-  // };
-  // const choosePhotoFromLibrary = () => {
-  //   ImagePicker.openPicker({
-  //     width: 300,
-  //     height: 300,
-  //     cropping: true,
-  //     compressImageQuality: 0.7,
-  //   }).then(image => {
-  //     console.log(image);
-  //     setProfilePic(image.path);
-  //     setStep(2);
-  //   });
-  // };
+      multiple: false,
+      compressImageQuality: 0.7,
+    }).then(image => {
+      // console.log(image);
+      setProfilePic(image.path);
+      setStep(2);
+    });
+  };
   return (
     // <ScrollView contentContainerStyle={styles.container}>
     <View style={styles.container}>
@@ -86,178 +95,133 @@ const SignupChatbot = ({navigation}) => {
             source={require('../../../../assets/person.png')}
             style={styles.image}
           />
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '900',
-              marginBottom: 20,
-              marginTop: 10,
-            }}>
-            Dispatcher
-          </Text>
+          <Text style={styles.textBold}>Dispatcher</Text>
         </View>
-        <View style={styles.botContainerWithAvatar}>
+        {/* <View style={styles.botContainerWithAvatar}>
           <View style={styles.imageAvatar}>
             <Text />
           </View>
           <View style={styles.botContainer}>
-            <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
+            <Text style={styles.text}>
               Hey John, lets start by creating your personal drivers profile.
             </Text>
           </View>
-        </View>
-        <View style={styles.botContainerWithAvatar}>
-          <Image
-            source={require('../../../../assets/person.png')}
-            style={styles.imageAvatar}
-          />
-          <View style={styles.botContainer}>
-            <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
-              Lets start by getting a picture of you
-            </Text>
-          </View>
-        </View>
+        </View> */}
+        <BotChatBubble text="Hey John, lets start by creating your personal drivers profile." />
+        <BotChatBubble text="Lets start by getting a picture of you" />
         <View style={styles.spacer} />
         {/* step 2 */}
         {steps > 1 && (
           <View>
-            <View style={styles.floatRight}>
-                  <View style={{width: 200,  height: 100}}>
-                     <Image source={{uri: uri }} width= {'100%'} height={'100%'} resizeMode="cover"/>
-                  </View>
-                {/* // <Image source={require('../../../../assets/userupload.png')} /> */}
-            </View>
+            <UserChatBubble>
+              <Image
+                source={{uri: profilePic}}
+                style={{
+                  width: 100,
+                  height: 100,
+                }}
+                resizeMode="cover"
+              />
+            </UserChatBubble>
+
             <View style={styles.spacer} />
-            <View style={styles.botContainerWithAvatar}>
-              <Image source={profilePic} style={styles.imageAvatar} />
-              <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
-                  What is your speaking language?
-                </Text>
-              </View>
-            </View>
+            <BotChatBubble text="What is your speaking language?" />
           </View>
         )}
         {/* step 3 */}
         {steps > 2 && (
           <View>
-            <View style={styles.floatRight}>
-              <View style={styles.userChatContainer}>
-                <Text style={{color: 'white'}}>I speak {language}</Text>
-              </View>
-            </View>
+            <UserChatBubble>
+              <Text style={{color: 'white'}}>I speak {language}</Text>
+            </UserChatBubble>
+
             <View style={styles.spacer} />
-            <View style={styles.botContainerWithAvatar}>
-              <Image
-                source={require('../../../../assets/person.png')}
-                style={styles.imageAvatar}
-              />
-              <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
-                  What is your home address?
-                </Text>
-              </View>
-            </View>
+            <BotChatBubble text="What is your home address?" />
             <View style={styles.spacer} />
           </View>
         )}
         {/* step 4 */}
         {steps > 3 && (
           <View>
-            <View style={styles.floatRight}>
-              <View style={styles.userChatContainer}>
-                <Text style={{color: 'white'}}>{address}</Text>
-              </View>
-            </View>
+            <UserChatBubble>
+              <Text style={{color: 'white'}}>{address}</Text>
+            </UserChatBubble>
+
             <View style={styles.spacer} />
-            <View style={styles.botContainerWithAvatar}>
-              <Image
-                source={require('../../../../assets/person.png')}
-                style={styles.imageAvatar}
-              />
-              <View style={styles.botContainer}>
-                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>
-                  When is your birthday??
-                </Text>
-              </View>
-            </View>
+            <BotChatBubble text="When is your birthday?" />
+            <View style={styles.spacer} />
+          </View>
+        )}
+        {/* step 5 */}
+        {steps > 4 && (
+          <View>
+            <UserChatBubble>
+              <Text style={{color: 'white'}}>
+                {Moment(date).format('MMMM Do YYYY')}
+              </Text>
+            </UserChatBubble>
+
+            <View style={styles.spacer} />
+            <BotChatBubble text="What is your level of Driving experience?" />
+            <View style={styles.spacer} />
+          </View>
+        )}
+        {steps > 5 && (
+          <View>
+            <UserChatBubble>
+              <Text style={{color: 'white'}}>{value} years of experience</Text>
+            </UserChatBubble>
+            <View style={styles.spacer} />
+            <BotChatBubble text="What is your phone number?" />
             <View style={styles.spacer} />
           </View>
         )}
       </ScrollView>
       {/* bottom pick image*/}
       {steps === 1 && (
-        <View
-          style={{
-            backgroundColor: colors.bg.quaternary,
-            padding: 20,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.toolContainer}>
-              <TouchableOpacity onPress={onCameraPress}>
-                <Icon name="camera-outline" size={20} />
-              </TouchableOpacity>
-              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Take Picture</Text>
-            </View>
-            <View style={styles.toolContainer}>
-              <TouchableOpacity onPress={onImageLibraryPress}>
-                <Icon name="image-outline" size={20} />
-              </TouchableOpacity>
-              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Gallery</Text>
-            </View>
-          </View>
-        </View>
+        <PickPicture
+          takePhotoFromCamera={takePhotoFromCamera}
+          choosePhotoFromLibrary={choosePhotoFromLibrary}
+        />
       )}
       {/* bottom choose language*/}
       {steps === 2 && (
-        <View
-          style={{
-            backgroundColor: colors.bg.quaternary,
-            padding: 20,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'column'}}>
-            <TouchableOpacity
-              style={styles.btnContainer}
+        <ToolContainer>
+            <SelectButton
               onPress={() => {
                 setLanguage('English');
                 setStep(3);
-              }}>
-              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>English</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnContainer}
+              }}
+              text="English"
+            />
+            <SelectButton
               onPress={() => {
                 setLanguage('Spanish');
                 setStep(3);
-              }}>
-              <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Spanish</Text>
-            </TouchableOpacity>
-            <View
-              style={styles.btnContainer}
+              }}
+              text="Spanish"
+            />
+            <SelectButton
               onPress={() => {
                 setLanguage('Russian');
                 setStep(3);
-              }}>
-              <TouchableOpacity>
-                <Text style={{fontSize: 14, fontWeight: '400', color: 'black'}}>Russian</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+              }}
+              text="Russian"
+            />
+        </ToolContainer>
       )}
       {steps === 3 && (
         <View
           style={{
             backgroundColor: colors.bg.quaternary,
-            paddingBottom: 10,
+            padding: 10,
             alignItems: 'center',
+            justifyContent: 'center',
             height: 100,
           }}>
           <View>
             <InputForm
-              style={{flex: 1}}
+              // style={{flex: 1}}
               autoCapitalize="none"
               name="address"
               placeholder="Street Address, City, State"
@@ -274,6 +238,99 @@ const SignupChatbot = ({navigation}) => {
           </View>
         </View>
       )}
+      {steps === 4 && (
+        <View>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+          <ToolContainer>
+            <SelectButton onPress={showDatepicker} text="Pick Date" />
+          </ToolContainer>
+        </View>
+      )}
+      {steps === 5 && (
+        <View>
+          <View
+            style={{
+              padding: 20,
+              width: '100%',
+              alignContent: 'center',
+              justifyContent: 'center',
+            }}>
+            <Slider
+              value={value}
+              onValueChange={setValue}
+              maximumValue={10}
+              minimumValue={1}
+              style={{alignContent: 'center', justifyContent: 'center'}}
+              step={1}
+              allowTouchTrack
+              trackStyle={{height: 5, backgroundColor: '#3BC2DE'}}
+              thumbStyle={{
+                height: 20,
+                width: 20,
+                backgroundColor: 'transparent',
+              }}
+              minimumTrackTintColor="#90C862"
+              thumbProps={{
+                children: (
+                  <Icon
+                    name="location"
+                    size={20}
+                    containerStyle={{bottom: 20, right: 20}}
+                    color="#3BC2DE"
+                  />
+                ),
+              }}
+            />
+            <View style={styles.exYear}>
+              <Text>{value} Yrs</Text>
+            </View>
+          </View>
+          <ToolContainer>
+            <SelectButton onPress={() => setStep(6)} text="Done" />
+          </ToolContainer>
+        </View>
+      )}
+      {steps === 6 && (
+        <View
+          style={{
+            backgroundColor: colors.bg.quaternary,
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 100,
+          }}>
+          <View>
+            <InputForm
+              // style={{flex: 1}}
+              autoCapitalize="none"
+              name="phone"
+              placeholder="(XXX) - XXX - XXXX"
+              value={phone}
+              keyboardType = "numeric"
+              onChangeText={text => setPhone(text)}
+            />
+            <Icon
+              name="send"
+              size={30}
+              onPress={() => {
+                setStep(4);
+                navigation.navigate('SignupTruckChatbot');
+              }}
+              color="#4CB75C"
+              style={{position: 'absolute', right: 15, top: 40}}
+            />
+          </View>
+        </View>
+      )}
     </View>
     // </ScrollView>
   );
@@ -283,38 +340,14 @@ export default SignupChatbot;
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 20,
     backgroundColor: 'white',
-    width: '100%',
-    height: '100%',
+    flex: 1,
     justifyContent: 'space-between',
   },
   center: {
     alignItems: 'center',
     alignContent: 'center',
     marginTop: 30,
-  },
-  botContainer: {
-    backgroundColor: colors.bg.tertiary,
-    color: colors.text.dark,
-    padding: 20,
-    width: '70%',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
-  },
-  userChatContainer: {
-    backgroundColor: colors.text.secondary,
-    color: colors.text.dark,
-    padding: 20,
-    // width: '70%',
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    borderBottomLeftRadius: 25,
-  },
-  botContainerWithAvatar: {
-    flexDirection: 'row',
-    marginBottom: 20,
   },
   image: {
     width: 100,
@@ -333,32 +366,29 @@ const styles = StyleSheet.create({
     // borderWidth: 3,
     // borderColor: 'red',
   },
-  toolContainer: {
-    backgroundColor: 'white',
-    marginRight: 15,
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 15,
-    width: '45%',
-  },
-  btnContainer: {
-    backgroundColor: 'white',
-    marginRight: 15,
-    marginBottom: 15,
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    borderRadius: 15,
-    width: 380,
-  },
   spacer: {
     margin: 10,
   },
-  floatRight: {
+  text: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'black',
+  },
+  textBold: {
+    fontSize: 16,
+    fontWeight: '900',
+    marginBottom: 20,
+    marginTop: 10,
+    color: 'black',
+  },
+  exYear: {
+    borderRadius: 10,
+    borderColor: '#F4F6FB',
+    padding: 15,
+    borderWidth: 2,
+    width: 100,
+    alignItems: 'center',
     justifyContent: 'flex-end',
-    flexDirection: 'row',
+    alignSelf: 'flex-end',
   },
 });

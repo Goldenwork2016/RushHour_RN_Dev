@@ -1,0 +1,27 @@
+  // const onImageLibraryPress = useCallback(() => {
+  //   const options = {
+  //     selectionLimit: 1,
+  //     mediaType: 'photo',
+  //     includeBase64: false,
+  //   };
+  //   ImagePicker.launchImageLibrary(options, setPickerResponse).then(image => {
+  //     setProfilePic(image.assets[0].uri);
+  //     setStep(2);
+  //   });
+  // }, []);
+
+  // const onCameraPress = useCallback(() => {
+  //   const options = {
+  //     saveToPhotos: true,
+  //     mediaType: 'photo',
+  //     includeBase64: false,
+  //   };
+  //   ImagePicker.launchCamera(options, setPickerResponse).then(image => {
+  //     setProfilePic(image.assets[0].uri);
+  //     console.log(image.assets[0].uri);
+  //     setStep(2);
+  //   });
+  // }, []);
+
+  // const uri = pickerResponse?.assets && pickerResponse.assets[0].uri;
+  //   console.log(uri);
