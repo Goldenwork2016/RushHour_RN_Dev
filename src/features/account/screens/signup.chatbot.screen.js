@@ -172,7 +172,7 @@ const SignupChatbot = ({navigation}) => {
           <View>
             <UserChatBubble>
               <Text style={{color: 'white'}}>
-                {Moment(date).format('MMM DD YYYY')}
+                {Moment(date).format('MMM DD, YYYY')}
               </Text>
             </UserChatBubble>
 
