@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import {colors} from '../../infrastructure/theme/colors';
 
 const Input = styled.TextInput.attrs({
-  placeholderTextColor: colors.text.disabled,
+  placeholderTextColor: colors.text.dark,
 })`
     width: 350px;
     height: ${props => props.theme.sizes[5]};

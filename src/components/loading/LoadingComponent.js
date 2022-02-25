@@ -42,7 +42,7 @@ const Loading = ({navigation}) => {
           timerValue: progress.progress.timerValue + 1,
         },
         () => {
-          if (progress.progress.timerValue === 5) {
+          if (progress.progress.timerValue == 5) {
             setProgress({
               timerValue: 0,
             });
