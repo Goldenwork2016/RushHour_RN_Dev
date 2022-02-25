@@ -172,7 +172,7 @@ const SignupChatbot = ({navigation}) => {
           <View>
             <UserChatBubble>
               <Text style={{color: 'white'}}>
-                {Moment(date).format('MMMM Do YYYY')}
+                {Moment(date).format('MMM DD YYYY')}
               </Text>
             </UserChatBubble>
 
@@ -309,7 +309,7 @@ const SignupChatbot = ({navigation}) => {
               }}
             />
             <View style={styles.exYear}>
-              <Text>{value} Yrs</Text>
+              <Text style={styles.text}>{value} Yrs</Text>
             </View>
           </View>
           <ToolContainer>
