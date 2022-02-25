@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 import BotChatBubble from '../components/chatbot/botChatBubble';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -29,19 +29,6 @@ import {colors} from '../../../infrastructure/theme/colors';
 
 // import { TouchableOpacity} from 'react-native-gesture-handler';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 const SignupChatbot = ({navigation}) => {
   const [profilePic, setProfilePic] = useState(null);
   const [steps, setStep] = useState(1);
@@ -53,6 +40,9 @@ const SignupChatbot = ({navigation}) => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(1);
 
+  const [addressError, setAddressError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+  const scrollViewRef = useRef();
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
@@ -104,7 +94,12 @@ const SignupChatbot = ({navigation}) => {
   return (
     // <ScrollView contentContainerStyle={styles.container}>
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{padding: 20}}>
+      <ScrollView
+        contentContainerStyle={{padding: 20}}
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }>
         <View style={styles.center}>
           <Image
             source={require('../../../../assets/person.png')}
@@ -112,16 +107,6 @@ const SignupChatbot = ({navigation}) => {
           />
           <Text style={styles.textBold}>Dispatcher</Text>
         </View>
-        {/* <View style={styles.botContainerWithAvatar}>
-          <View style={styles.imageAvatar}>
-            <Text />
-          </View>
-          <View style={styles.botContainer}>
-            <Text style={styles.text}>
-              Hey John, lets start by creating your personal drivers profile.
-            </Text>
-          </View>
-        </View> */}
         <BotChatBubble text="Hey John, lets start by creating your personal drivers profile." />
         <BotChatBubble text="Lets start by getting a picture of you" />
         <View style={styles.spacer} />
@@ -152,6 +137,11 @@ const SignupChatbot = ({navigation}) => {
 
             <View style={styles.spacer} />
             <BotChatBubble text="What is your home address?" />
+            {addressError && (
+              <View>
+                <BotChatBubble text="Address is required. What is your home address?" />
+              </View>
+            )}
             <View style={styles.spacer} />
           </View>
         )}
@@ -188,6 +178,11 @@ const SignupChatbot = ({navigation}) => {
             </UserChatBubble>
             <View style={styles.spacer} />
             <BotChatBubble text="What is your phone number?" />
+            {phoneError && (
+              <View>
+                <BotChatBubble text="Phone number is required. What is your phone number?" />
+              </View>
+            )}
             <View style={styles.spacer} />
           </View>
         )}
@@ -195,37 +190,36 @@ const SignupChatbot = ({navigation}) => {
       {/* bottom pick image*/}
       {steps === 1 && (
         <PickPicture
-          takePhotoFromCamera={()=> {
+          takePhotoFromCamera={() => {
             takePhotoFromCamera();
-          }
-            }
+          }}
           choosePhotoFromLibrary={choosePhotoFromLibrary}
         />
       )}
       {/* bottom choose language*/}
       {steps === 2 && (
         <ToolContainer>
-            <SelectButton
-              onPress={() => {
-                setLanguage('English');
-                setStep(3);
-              }}
-              text="English"
-            />
-            <SelectButton
-              onPress={() => {
-                setLanguage('Spanish');
-                setStep(3);
-              }}
-              text="Spanish"
-            />
-            <SelectButton
-              onPress={() => {
-                setLanguage('Russian');
-                setStep(3);
-              }}
-              text="Russian"
-            />
+          <SelectButton
+            onPress={() => {
+              setLanguage('English');
+              setStep(3);
+            }}
+            text="English"
+          />
+          <SelectButton
+            onPress={() => {
+              setLanguage('Spanish');
+              setStep(3);
+            }}
+            text="Spanish"
+          />
+          <SelectButton
+            onPress={() => {
+              setLanguage('Russian');
+              setStep(3);
+            }}
+            text="Russian"
+          />
         </ToolContainer>
       )}
       {steps === 3 && (
@@ -249,7 +243,14 @@ const SignupChatbot = ({navigation}) => {
             <Icon
               name="send"
               size={30}
-              onPress={() => setStep(4)}
+              onPress={() => {
+                if (address.length < 1) {
+                  setAddressError(true);
+                } else {
+                  // scrollToEnd()
+                  setStep(4);
+                }
+              }}
               color="#4CB75C"
               style={{position: 'absolute', right: 15, top: 40}}
             />
@@ -333,15 +334,19 @@ const SignupChatbot = ({navigation}) => {
               name="phone"
               placeholder="(XXX) - XXX - XXXX"
               value={phone}
-              keyboardType = "numeric"
+              keyboardType="numeric"
               onChangeText={text => setPhone(text)}
             />
             <Icon
               name="send"
               size={30}
               onPress={() => {
-                setStep(4);
-                navigation.navigate('SignupTruckChatbot');
+                if (phone.length < 1) {
+                  setPhoneError(true);
+                } else {
+                  setStep(4);
+                  navigation.navigate('SignupTruckChatbot');
+                }
               }}
               color="#4CB75C"
               style={{position: 'absolute', right: 15, top: 40}}

@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 
 import BotChatBubble from '../components/chatbot/botChatBubble';
@@ -24,39 +24,24 @@ import UserChatBubble from '../components/chatbot/userChatBubble';
 import {colors} from '../../../infrastructure/theme/colors';
 
 const RegistrationTruckInfo = ({navigation}) => {
+  const scrollViewRef = useRef();
   const [steps, setStep] = useState(1);
   const [vehicleBrand, setVehicleBrand] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
+  const [plateNumberError, setPlateNumberError] = useState(false);
   const [truck, setTruck] = useState('');
-  const [type, setType] = useState('');
   const [driverLicense, setDriverLicense] = useState(null);
   const [registrationCard, setRegistrationCard] = useState(null);
   const [insuranceCard, setInsuranceCard] = useState(null);
 
-  const takePhotoFromCamera = () => {
-    ImagePicker.openCamera({
-      compressImageMaxWidth: 300,
-      compressImageMaxHeight: 300,
-      cropping: true,
-      compressImageQuality: 0.7,
-      //   includeBase64: true,
-      multiple: false,
-    }).then(async image => {
-    //   if (type === 'driverLicense') {
-    //     setDriverLicense(image.path);
-    //     setStep(5);
-    //   } else if (type === 'registrationCard') {
-    //     setRegistrationCard(image.path);
-    //     setStep(6);
-    //   } else {
-        // setInsuranceCard(image.path);
-        // setStep(7);
-    //   }
-    });
-  };
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{padding: 20}}>
+      <ScrollView
+        contentContainerStyle={{padding: 20}}
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({animated: true})
+        }>
         <View style={styles.center}>
           <Image
             source={require('../../../../assets/person.png')}
@@ -75,6 +60,11 @@ const RegistrationTruckInfo = ({navigation}) => {
             </UserChatBubble>
             <View style={styles.spacer} />
             <BotChatBubble text="Whats your license plate number?" />
+            {plateNumberError && (
+              <View>
+                <BotChatBubble text="License plate number is required. Whats your license plate number?" />
+              </View>
+            )}
           </View>
         )}
         {/* step 2 */}
@@ -235,7 +225,13 @@ const RegistrationTruckInfo = ({navigation}) => {
             <Icon
               name="send"
               size={30}
-              onPress={() => setStep(3)}
+              onPress={() => {
+                if (plateNumber.length < 1) {
+                  setPlateNumberError(true);
+                } else {
+                  setStep(3);
+                }
+              }}
               color="#4CB75C"
               style={{position: 'absolute', right: 15, top: 40}}
             />
@@ -318,29 +314,29 @@ const RegistrationTruckInfo = ({navigation}) => {
         <PickPicture
           takePhotoFromCamera={() => {
             ImagePicker.openCamera({
-                compressImageMaxWidth: 300,
-                compressImageMaxHeight: 300,
-                cropping: true,
-                compressImageQuality: 0.7,
-                //   includeBase64: true,
-                multiple: false,
-              }).then(async image => {
-                  setDriverLicense(image.path);
-                  setStep(5);
-              });
+              compressImageMaxWidth: 300,
+              compressImageMaxHeight: 300,
+              cropping: true,
+              compressImageQuality: 0.7,
+              //   includeBase64: true,
+              multiple: false,
+            }).then(async image => {
+              setDriverLicense(image.path);
+              setStep(5);
+            });
           }}
           choosePhotoFromLibrary={() => {
-                ImagePicker.openPicker({
-                  width: 300,
-                  height: 300,
-                  cropping: true,
-                  mediaType: 'photo',
-                  multiple: false,
-                  compressImageQuality: 0.7,
-                }).then(image => {
-                    setDriverLicense(image.path);
-                    setStep(5);
-                });
+            ImagePicker.openPicker({
+              width: 300,
+              height: 300,
+              cropping: true,
+              mediaType: 'photo',
+              multiple: false,
+              compressImageQuality: 0.7,
+            }).then(image => {
+              setDriverLicense(image.path);
+              setStep(5);
+            });
           }}
         />
       )}
@@ -348,29 +344,29 @@ const RegistrationTruckInfo = ({navigation}) => {
         <PickPicture
           takePhotoFromCamera={() => {
             ImagePicker.openCamera({
-                compressImageMaxWidth: 300,
-                compressImageMaxHeight: 300,
-                cropping: true,
-                compressImageQuality: 0.7,
-                //   includeBase64: true,
-                multiple: false,
-              }).then(async image => {
-                  setRegistrationCard(image.path);
-                  setStep(6);
-              });
+              compressImageMaxWidth: 300,
+              compressImageMaxHeight: 300,
+              cropping: true,
+              compressImageQuality: 0.7,
+              //   includeBase64: true,
+              multiple: false,
+            }).then(async image => {
+              setRegistrationCard(image.path);
+              setStep(6);
+            });
           }}
           choosePhotoFromLibrary={() => {
             ImagePicker.openPicker({
-                width: 300,
-                height: 300,
-                cropping: true,
-                mediaType: 'photo',
-                multiple: false,
-                compressImageQuality: 0.7,
-              }).then(image => {
-                  setRegistrationCard(image.path);
-                  setStep(6);
-              });
+              width: 300,
+              height: 300,
+              cropping: true,
+              mediaType: 'photo',
+              multiple: false,
+              compressImageQuality: 0.7,
+            }).then(image => {
+              setRegistrationCard(image.path);
+              setStep(6);
+            });
           }}
         />
       )}
@@ -378,29 +374,29 @@ const RegistrationTruckInfo = ({navigation}) => {
         <PickPicture
           takePhotoFromCamera={() => {
             ImagePicker.openCamera({
-                compressImageMaxWidth: 300,
-                compressImageMaxHeight: 300,
-                cropping: true,
-                compressImageQuality: 0.7,
-                //   includeBase64: true,
-                multiple: false,
-              }).then(async image => {
-                  setInsuranceCard(image.path);
-                  setStep(7);
-              });
+              compressImageMaxWidth: 300,
+              compressImageMaxHeight: 300,
+              cropping: true,
+              compressImageQuality: 0.7,
+              //   includeBase64: true,
+              multiple: false,
+            }).then(async image => {
+              setInsuranceCard(image.path);
+              setStep(7);
+            });
           }}
           choosePhotoFromLibrary={() => {
             ImagePicker.openPicker({
-                width: 300,
-                height: 300,
-                cropping: true,
-                mediaType: 'photo',
-                multiple: false,
-                compressImageQuality: 0.7,
-              }).then(image => {
-                  setInsuranceCard(image.path);
-                  setStep(7);
-              });
+              width: 300,
+              height: 300,
+              cropping: true,
+              mediaType: 'photo',
+              multiple: false,
+              compressImageQuality: 0.7,
+            }).then(image => {
+              setInsuranceCard(image.path);
+              setStep(7);
+            });
           }}
         />
       )}
