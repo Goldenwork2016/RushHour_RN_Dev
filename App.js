@@ -4,7 +4,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'styled-components/native';
@@ -14,8 +14,9 @@ import Loading from './src/components/loading/LoadingComponent';
 import SplashScreen from './src/components/loading/splash.screen';
 
 const App = () => {
-  const [isLoad, setIsLoad] = React.useState(false);
-  const [isSplash, setIssplash] = React.useState(false);
+  const [isLoad, setIsLoad] = useState(false);
+  const [isSplash, setIssplash] = useState(false);
+  const [user, setUser] = useState(false);
 
   setTimeout(() => {
     setIssplash(true);
@@ -29,7 +30,7 @@ const App = () => {
     <SafeAreaProvider>
       <ThemeProvider theme={theme}>
         {isLoad && isSplash ? (
-          <Navigation />
+          <Navigation user={user} />
         ) : !isSplash && !isLoad ? (
           <SplashScreen />
         ) : (

@@ -8,6 +8,7 @@ import ForgotPassword from '../../features/account/screens/forgotpassword.screen
 import ResetPassword from '../../features/account/screens/resetpassword.screen';
 import SignupChatbot from '../../features/account/screens/signup.chatbot.screen';
 import RegistrationTruckInfo from '../../features/account/screens/trackinfo.chatbot.screen';
+import TabNavigator from './tab.navigation';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="Register" component={Register} />
     <Stack.Screen name="SignupChatbot" component={SignupChatbot} />
     <Stack.Screen name="SignupTruckChatbot" component={RegistrationTruckInfo} />
+    <Stack.Screen name="Dashboard" component={TabNavigator} />
   </Stack.Navigator>
 );
 

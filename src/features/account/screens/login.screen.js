@@ -169,7 +169,7 @@ const Login = ({navigation}) => {
 
               <CheckboxLabel>I agree to the terms and conditions</CheckboxLabel>
             </CheckboxContainer>
-            <OnTouch>
+            <OnTouch onPress={() => navigation.navigate('Dashboard')}>
               <SubmitButton resizeMode="cover">
                 <ButtonText>Sign In</ButtonText>
               </SubmitButton>
