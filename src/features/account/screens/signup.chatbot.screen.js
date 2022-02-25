@@ -4,27 +4,43 @@
 // /* eslint-disable */
 
 import {
-  StyleSheet,
-  Text,
-  View,
   Image,
   ImageBackground,
   Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
-import {colors} from '../../../infrastructure/theme/colors';
+import React, {useCallback, useEffect, useState} from 'react';
+
+import BotChatBubble from '../components/chatbot/botChatBubble';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import InputForm from '../../../components/form-control/InputFormComponent';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
-import {Slider} from 'react-native-elements';
 import PickPicture from '../components/chatbot/choosepicture';
 import SelectButton from '../components/chatbot/select.button';
+import {Slider} from 'react-native-elements';
 import ToolContainer from '../components/chatbot/bottom.tool.container';
-import BotChatBubble from '../components/chatbot/botChatBubble';
 import UserChatBubble from '../components/chatbot/userChatBubble';
+import {colors} from '../../../infrastructure/theme/colors';
+
+// import { TouchableOpacity} from 'react-native-gesture-handler';
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const SignupChatbot = ({navigation}) => {
   const [profilePic, setProfilePic] = useState(null);
@@ -64,7 +80,6 @@ const SignupChatbot = ({navigation}) => {
       compressImageMaxHeight: 300,
       cropping: true,
       compressImageQuality: 0.7,
-      //   includeBase64: true,
       multiple: false,
     }).then(async image => {
       // console.log(image.path);
@@ -157,7 +172,7 @@ const SignupChatbot = ({navigation}) => {
           <View>
             <UserChatBubble>
               <Text style={{color: 'white'}}>
-                {Moment(date).format('MMMM Do YYYY')}
+                {Moment(date).format('MMM DD YYYY')}
               </Text>
             </UserChatBubble>
 
@@ -180,7 +195,10 @@ const SignupChatbot = ({navigation}) => {
       {/* bottom pick image*/}
       {steps === 1 && (
         <PickPicture
-          takePhotoFromCamera={takePhotoFromCamera}
+          takePhotoFromCamera={()=> {
+            takePhotoFromCamera();
+          }
+            }
           choosePhotoFromLibrary={choosePhotoFromLibrary}
         />
       )}
@@ -291,7 +309,7 @@ const SignupChatbot = ({navigation}) => {
               }}
             />
             <View style={styles.exYear}>
-              <Text>{value} Yrs</Text>
+              <Text style={styles.text}>{value} Yrs</Text>
             </View>
           </View>
           <ToolContainer>

@@ -1,17 +1,19 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+/* eslint-disable react-native/no-inline-styles */
 
-import {colors} from '../../../infrastructure/theme/colors';
-import ImputForm from '../../../components/form-control/InputFormComponent';
 import {
-  MainContiner,
   AuthContainer,
   ButtonText,
-  SubmitButton,
+  MainContiner,
   OnTouch,
+  SubmitButton,
 } from '../components/accounts.styles';
+import React, {useState} from 'react';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import ImputForm from '../../../components/form-control/InputFormComponent';
+import {colors} from '../../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
 
 const HeadingContainer = styled.View`
   margin-bottom: ${props => props.theme.space[4]};
@@ -94,7 +96,7 @@ const Register = ({navigation}) => {
           )}
         </Group>
 
-        <OnTouch onPress={() => null}>
+        <OnTouch onPress={() => navigation.navigate('SignupChatbot')}>
           <SubmitButton resizeMode="cover">
             <ButtonText>Sign Up</ButtonText>
           </SubmitButton>
