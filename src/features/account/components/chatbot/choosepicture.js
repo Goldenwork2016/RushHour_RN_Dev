@@ -19,7 +19,6 @@ const PickPicture = props => {
           <Text style={styles.text}>Take Picture</Text>
           </View>
         </TouchableOpacity>
-
         <TouchableOpacity
           onPress={props.choosePhotoFromLibrary}
           style={styles.toolContainer}>
@@ -67,6 +66,8 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    // position: 'absolute',
+    // bottom: 0,
     // height: 100,
   },
 });
