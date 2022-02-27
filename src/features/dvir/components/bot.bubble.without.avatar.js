@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import React from 'react';
-import {colors} from '../../../../infrastructure/theme/colors';
+import { colors } from '../../../infrastructure/theme/colors';
 
-const BotChatBubble = (props) => {
+const BotChatBubbleNoAvatar = props => {
   return (
     <View style={styles.botContainerWithAvatar}>
-      <Image
-        source={require('../../../../../assets/person.png')}
+      <View
+        // source={require('../../../../../assets/person.png')}
         style={styles.imageAvatar}
       />
       <View style={styles.botContainer}>
@@ -19,7 +19,7 @@ const BotChatBubble = (props) => {
   );
 };
 
-export default BotChatBubble;
+export default BotChatBubbleNoAvatar;
 
 const styles = StyleSheet.create({
   botContainer: {

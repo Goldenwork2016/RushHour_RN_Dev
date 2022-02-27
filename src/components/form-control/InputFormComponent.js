@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
+
 import React from 'react';
-import styled from 'styled-components/native';
 import {colors} from '../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
 
 const Input = styled.TextInput.attrs({
   placeholderTextColor: colors.text.disabled,

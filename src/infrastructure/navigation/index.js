@@ -1,10 +1,14 @@
-import React from 'react';
+/* eslint-disable prettier/prettier */
+
+// import AccountNavigator from './account.nav';
 import {NavigationContainer} from '@react-navigation/native';
-import AccountNavigator from './account.nav';
+import React from 'react';
+import DVIRNavigator from './dvir.nav';
+
 const Navigation = () => {
   return (
     <NavigationContainer>
-      <AccountNavigator />
+      <DVIRNavigator />
     </NavigationContainer>
   );
 };
