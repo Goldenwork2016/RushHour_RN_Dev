@@ -11,6 +11,7 @@ import RegistrationTruckInfo from '../../features/account/screens/trackinfo.chat
 import ResetPassword from '../../features/account/screens/resetpassword.screen';
 import RouteList from './../../features/dvir/screens/route.list';
 import SignupChatbot from '../../features/account/screens/signup.chatbot.screen';
+import TabNavigator from './tab.navigation';
 import TruckRoute from '../../features/dvir/screens/route.map';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -32,6 +33,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="DVIRChatBot" component={DVIRChatBot} />
     <Stack.Screen name="RouteList" component={RouteList} />
     <Stack.Screen name="TruckRoute" component={TruckRoute} />
+    <Stack.Screen name="Dashboard" component={TabNavigator} />
   </Stack.Navigator>
 );
 
