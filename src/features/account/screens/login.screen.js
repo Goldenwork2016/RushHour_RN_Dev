@@ -1,19 +1,28 @@
-import React, {useState} from 'react';
-import styled from 'styled-components/native';
-import {Image} from 'react-native';
-//import {Ionicons} from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/Ionicons';
+/* eslint-disable prettier/prettier */
 
-import {colors} from '../../../infrastructure/theme/colors';
-import ImputForm from '../../../components/form-control/InputFormComponent';
 import {
   AuthContainer,
-  Group,
   ButtonText,
-  SubmitButton,
+  Group,
   OnTouch,
+  SubmitButton,
 } from '../components/accounts.styles';
-import {Lockbackground, LockIcon} from '../components/loginbackground.styles';
+import {LockIcon, Lockbackground} from '../components/loginbackground.styles';
+import React, {useState} from 'react';
+
+import Icon from 'react-native-vector-icons/Ionicons';
+import {Image} from 'react-native';
+import ImputForm from '../../../components/form-control/InputFormComponent';
+import {colors} from '../../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
+
+//import {Ionicons} from '@expo/vector-icons';
+
+
+
+
+
+
 
 const LoginContiner = styled.View`
   justify-content: center;
