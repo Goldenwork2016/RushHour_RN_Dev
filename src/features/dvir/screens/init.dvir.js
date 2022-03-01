@@ -6,66 +6,79 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 
 import BotChatBubble from '../components/botChatBubble';
 import BotChatBubbleNoAvatar from '../components/bot.bubble.without.avatar';
+import DVIRLoading from '../../../components/loading/dvirLoading';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InputForm from '../../../components/form-control/InputFormComponent';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useState} from 'react';
 
 const InitDVIR = ({navigation}) => {
   const scrollViewRef = useRef();
   const [licensePlate, setLicensePlate] = useState('');
   const [licenseError, setLicenseError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 3000);
   return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{padding: 20}}
-        ref={scrollViewRef}
-        onContentSizeChange={() =>
-          scrollViewRef.current.scrollToEnd({animated: true})
-        }>
-        <View style={styles.spacer} />
-        <View style={styles.spacer} />
-        <BotChatBubble text="Hey, good morning John!" />
-        <BotChatBubbleNoAvatar text="Please enter the license plate of the truck you will be driving today" />
-        {licenseError && (
-          <BotChatBubbleNoAvatar text="License plate is required, please enter the license plate" />
-        )}
-        <View style={styles.spacer} />
-      </ScrollView>
-      <View>
-        <View
-          style={{
-            backgroundColor: '#F4F6FB',
-            padding: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 100,
-          }}>
-          <InputForm
-            // style={{flex: 1}}
-            autoCapitalize="none"
-            name="licensePlate"
-            placeholder=""
-            value={licensePlate}
-            style={{backgroundColor: 'white'}}
-            onChangeText={text => setLicensePlate(text)}
-          />
-          <Icon
-            name="send"
-            size={30}
-            onPress={() => {
-              if (licensePlate.length < 1) {
-                setLicenseError(true);
-              } else {
-                // setStep(4);
-                navigation.navigate('DVIRReady');
-              }
-            }}
-            color="#4CB75C"
-            style={{position: 'absolute', right: 15, top: 40}}
-          />
+    <SafeAreaView style={{flex: 1}}>
+      {isLoading ? (
+        <DVIRLoading />
+      ) : (
+        <View style={styles.container}>
+          <ScrollView
+            contentContainerStyle={{padding: 20}}
+            ref={scrollViewRef}
+            onContentSizeChange={() =>
+              scrollViewRef.current.scrollToEnd({animated: true})
+            }>
+            <View style={styles.spacer} />
+            <View style={styles.spacer} />
+            <BotChatBubble text="Hey, good morning John!" />
+            <BotChatBubbleNoAvatar text="Please enter the license plate of the truck you will be driving today" />
+            {licenseError && (
+              <BotChatBubbleNoAvatar text="License plate is required, please enter the license plate" />
+            )}
+            <View style={styles.spacer} />
+          </ScrollView>
+          <View>
+            <View
+              style={{
+                backgroundColor: '#F4F6FB',
+                padding: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: 100,
+              }}>
+              <InputForm
+                // style={{flex: 1}}
+                autoCapitalize="none"
+                name="licensePlate"
+                placeholder=""
+                value={licensePlate}
+                style={{backgroundColor: 'white'}}
+                onChangeText={text => setLicensePlate(text)}
+              />
+              <Icon
+                name="send"
+                size={30}
+                onPress={() => {
+                  if (licensePlate.length < 1) {
+                    setLicenseError(true);
+                  } else {
+                    // setStep(4);
+                    navigation.navigate('DVIRReady');
+                  }
+                }}
+                color="#4CB75C"
+                style={{position: 'absolute', right: 15, top: 40}}
+              />
+            </View>
+          </View>
         </View>
-      </View>
-    </View>
+      )}
+    </SafeAreaView>
   );
 };
 

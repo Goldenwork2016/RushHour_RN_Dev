@@ -34,6 +34,7 @@ const RegistrationTruckInfo = ({navigation}) => {
   const [registrationCard, setRegistrationCard] = useState(null);
   const [insuranceCard, setInsuranceCard] = useState(null);
 
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -383,6 +384,7 @@ const RegistrationTruckInfo = ({navigation}) => {
             }).then(async image => {
               setInsuranceCard(image.path);
               setStep(7);
+              navigation.navigate('InitDVIR');
             });
           }}
           choosePhotoFromLibrary={() => {
@@ -396,6 +398,7 @@ const RegistrationTruckInfo = ({navigation}) => {
             }).then(image => {
               setInsuranceCard(image.path);
               setStep(7);
+              navigation.navigate('InitDVIR');
             });
           }}
         />

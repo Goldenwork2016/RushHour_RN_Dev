@@ -85,14 +85,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: 'black',
   },
-  exYear: {
-    borderRadius: 10,
-    borderColor: '#F4F6FB',
-    padding: 15,
-    borderWidth: 2,
-    width: 100,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    alignSelf: 'flex-end',
-  },
 });

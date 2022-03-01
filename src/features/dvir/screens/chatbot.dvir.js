@@ -11,6 +11,7 @@ import ButtonSubmit from '../components/button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import InputForm from '../../../components/form-control/InputFormComponent';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const getWidth = Dimensions.get('window').width;
 const DVIRChatBot = ({navigation}) => {
@@ -175,13 +176,24 @@ const DVIRChatBot = ({navigation}) => {
               <BotChatBubbleNoAvatar text="Sign required, please sign" />
             )}
           </View>
-        )}{steps > 8 && (
-          <View>
-            <BotChatBubble text="Thanks for completing the DVIR!" />
-            <BotChatBubbleNoAvatar text="Here is your route for the day" />
+        )}
+        {steps > 8 && (
+          <View style={{justifyContent: 'space-between'}}>
+            <View>
+              <BotChatBubble text="Thanks for completing the DVIR!" />
+              <BotChatBubbleNoAvatar text="Here is your route for the day" />
+            </View>
           </View>
         )}
       </ScrollView>
+      {steps > 8 && (
+        <View style={{alignItems: 'center'}}>
+          <ButtonSubmit
+            text="View Route"
+            onPress={() => navigation.navigate('TruckRoute')}
+          />
+        </View>
+      )}
       {steps === 1 && (
         <View
           style={{
@@ -190,15 +202,12 @@ const DVIRChatBot = ({navigation}) => {
             height: '50%',
             justifyContent: 'space-between',
           }}>
-          <View style={styles.circleCon}>
-            <Icon
-              name="camera"
-              size={30}
-              onPress={takePhotoFromCameraFront}
-              color="#4CB75C"
-            />
-          </View>
-          <ButtonSubmit text="Ready" onPress={()=> {}}/>
+          <TouchableOpacity onPress={takePhotoFromCameraFront}>
+            <View style={styles.circleCon}>
+              <Icon name="camera" size={30} color="#4CB75C" />
+            </View>
+          </TouchableOpacity>
+          <ButtonSubmit text="Ready" onPress={() => {}} />
         </View>
       )}
       {steps === 2 && (
@@ -209,14 +218,11 @@ const DVIRChatBot = ({navigation}) => {
             height: '30%',
             // justifyContent: 's',
           }}>
-          <View style={styles.circleCon}>
-            <Icon
-              name="camera"
-              size={30}
-              onPress={takePhotoFromCameraBack}
-              color="#4CB75C"
-            />
-          </View>
+          <TouchableOpacity onPress={takePhotoFromCameraBack}>
+            <View style={styles.circleCon}>
+              <Icon name="camera" size={30} color="#4CB75C" />
+            </View>
+          </TouchableOpacity>
         </View>
       )}
       {/* headlight */}
@@ -302,11 +308,15 @@ const DVIRChatBot = ({navigation}) => {
             autoCapitalize="none"
             name="sign"
             placeholder=""
-              multiline
-              numberOfLines={4}
+            multiline
+            numberOfLines={4}
             value={sign}
             onChangeText={text => setSign(text)}
-            style={{backgroundColor: 'white', height: 100, width: getWidth * 0.95}}
+            style={{
+              backgroundColor: 'white',
+              height: 100,
+              width: getWidth * 0.95,
+            }}
           />
           <Icon
             name="send"
@@ -316,7 +326,7 @@ const DVIRChatBot = ({navigation}) => {
                 setSignError(true);
               } else {
                 // scrollToEnd()
-                  setStep(9);
+                setStep(9);
               }
             }}
             color="#4CB75C"

@@ -4,14 +4,14 @@
  * @flow strict-local
  */
 
+import Loading from './src/components/loading/LoadingComponent';
+import Navigation from './src/infrastructure/navigation';
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import SplashScreen from './src/components/loading/splash.screen';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'styled-components/native';
 import {theme} from './src/infrastructure/theme';
-import Navigation from './src/infrastructure/navigation';
-import Loading from './src/components/loading/LoadingComponent';
-import SplashScreen from './src/components/loading/splash.screen';
 
 const App = () => {
   const [isLoad, setIsLoad] = React.useState(false);
