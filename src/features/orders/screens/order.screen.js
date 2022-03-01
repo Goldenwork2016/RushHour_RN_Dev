@@ -1,11 +1,19 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, Text, FlatList, Image} from 'react-native';
+import {View, FlatList, Text, TouchableOpacity} from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Modal, Portal, Button, Provider} from 'react-native-paper';
 
 import {colors} from '../../../infrastructure/theme/colors';
+import {space} from '../../../infrastructure/theme/spacing';
 import OrderList from '../components/orderlist.component';
+import HeaderTab from '../components/tap.order.component';
+import OrderCompleted from '../components/order.completed.component';
 
+const SafeView = styled.SafeAreaView`
+  background-color: ${props => props.theme.colors.bg.primary};
+`;
 const MainContainer = styled.View``;
 export const Lockbackground = styled.ImageBackground.attrs({
   source: require('../../../../assets/search-bg.png'),
@@ -26,8 +34,8 @@ const SearchInput = styled.TextInput.attrs({
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 12px;
-  background-color: #fff;
-  color: #000;
+  background-color: ${props => props.theme.colors.bg.primary};
+  color: ${props => props.theme.colors.text.dark};
 `;
 
 const SearchIcon = styled(Icon)`
@@ -40,41 +48,129 @@ const SearchIcon = styled(Icon)`
 const OrderListContainer = styled.View`
   background-color: ${props => props.theme.colors.bg.primary};
 `;
-
-const ChatListView = styled(FlatList).attrs({
-  paddingLeft: 32,
-  paddingRight: 32,
-  paddingTop: 32,
+const TagLine = styled.Text`
+  color: ${props => props.theme.colors.text.dark};
+  align-self: center;
+  font-size: ${props => props.theme.fontSizes.caption};
+  padding-top: ${props => props.theme.space[3]};
+`;
+const ListItem = styled(FlatList).attrs({
+  paddingLeft: 24,
+  paddingRight: 24,
+  paddingTop: 20,
   paddingBottom: 100,
   paddingMargin: 100,
 })``;
 
 const OrderScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
-
   const onChangeSearch = query => setSearchQuery(query);
+  const [tab, setTab] = useState(1);
+
+  const DATA = [
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Paid',
+      rating: 5,
+    },
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Unpaid',
+      rating: 3,
+    },
+    {
+      orderId: '#00769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Paid',
+      rating: 4,
+    },
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Paid',
+      rating: 2,
+    },
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Paid',
+      rating: 5,
+    },
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Paid',
+      rating: 5,
+    },
+    {
+      orderId: '#15769839',
+      amount: 130,
+      addres: '7958 Swift Village',
+      payment: 'Unpaid',
+      rating: 5,
+    },
+  ];
+  const [data, setData] = useState(DATA);
 
   return (
-    <MainContainer>
-      <Lockbackground>
-        <SearchBarContainer>
-          <SearchInput
-            placeholder="Search by order #"
-            value={searchQuery}
-            onChangeText={onChangeSearch}
-          />
-          <SearchIcon name="search" onPress={onChangeSearch} />
-        </SearchBarContainer>
-      </Lockbackground>
-      <OrderListContainer>
-        <ChatListView
-          ListFooterComponent={<View />}
-          ListFooterComponentStyle={{height: 150}}
-          data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
-          renderItem={item => <OrderList item={item} />}
-        />
-      </OrderListContainer>
-    </MainContainer>
+    <Provider>
+      <SafeView />
+      <HeaderTab tab={tab} setTab={setTab} />
+      {tab === 1 && (
+        <MainContainer>
+          <Lockbackground>
+            <SearchBarContainer>
+              <SearchInput
+                placeholder="Search by order #"
+                value={searchQuery}
+                onChangeText={onChangeSearch}
+              />
+              <SearchIcon name="search" onPress={onChangeSearch} />
+            </SearchBarContainer>
+          </Lockbackground>
+
+          <OrderListContainer>
+            <TagLine>Success! This order’s complete. Nice one.</TagLine>
+            <ListItem
+              ListFooterComponent={<View />}
+              ListFooterComponentStyle={{height: 300}}
+              data={data}
+              renderItem={({item}) => <OrderList item={item} />}
+            />
+          </OrderListContainer>
+        </MainContainer>
+      )}
+      {tab === 2 && (
+        <MainContainer>
+          <Lockbackground>
+            <SearchBarContainer>
+              <SearchInput
+                placeholder="Search by order #"
+                value={searchQuery}
+                onChangeText={onChangeSearch}
+              />
+              <SearchIcon name="search" onPress={onChangeSearch} />
+            </SearchBarContainer>
+          </Lockbackground>
+          <OrderListContainer>
+            <ListItem
+              ListFooterComponent={<View />}
+              ListFooterComponentStyle={{height: 280}}
+              data={data}
+              renderItem={({item}) => <OrderCompleted item={item} />}
+            />
+          </OrderListContainer>
+        </MainContainer>
+      )}
+    </Provider>
   );
 };
 

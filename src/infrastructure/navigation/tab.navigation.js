@@ -97,6 +97,7 @@ const TabNavigator = () => {
         name="Orders"
         component={OrderScreen}
         options={({route}) => ({
+          headerShown: false,
           title: 'Orders',
           headerTitleStyle: {
             alignSelf: 'center',
@@ -138,6 +139,7 @@ const TabNavigator = () => {
         name="Hos"
         component={HosScreen}
         options={() => ({
+          headerShown: false,
           title: 'HOS',
           headerTitleStyle: {
             alignSelf: 'center',
@@ -148,7 +150,7 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Dashboard"
+        name="Das"
         component={DashboardScreen}
         options={({route}) => ({
           title: 'Dashboard',
