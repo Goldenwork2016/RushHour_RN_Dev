@@ -3,8 +3,11 @@
 import DVIRChatBot from '../../features/dvir/screens/chatbot.dvir';
 import DVIRReady from '../../features/dvir/screens/ready.dvir';
 import ForgotPassword from '../../features/account/screens/forgotpassword.screen';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Image } from 'react-native';
 import InitDVIR from '../../features/dvir/screens/init.dvir';
 import LoginScreen from '../../features/account/screens/login.screen';
+import MessagingChat from '../../features/messaging/screens/message.chat';
 import React from 'react';
 import Register from '../../features/account/screens/register.screen';
 import RegistrationTruckInfo from '../../features/account/screens/trackinfo.chatbot.screen';
@@ -34,6 +37,24 @@ const AccountNavigator = () => (
     <Stack.Screen name="RouteList" component={RouteList} />
     <Stack.Screen name="TruckRoute" component={TruckRoute} />
     <Stack.Screen name="Dashboard" component={TabNavigator} />
+    <Stack.Screen
+      name="MessagingChat"
+      component={MessagingChat}
+      options={{
+        headerLeft:()=>(<Image source={require('../../../assets/back.png')} style={{marginLeft: 20}} />),
+        title: 'Messaging',
+        headerStyle: {
+          backgroundColor: 'white',
+        },
+        headerTintColor: '#000',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerTitleAlign: 'center',
+        headerShown: true,
+      }}
+    />
   </Stack.Navigator>
 );
 
