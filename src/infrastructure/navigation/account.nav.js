@@ -3,7 +3,6 @@
 import DVIRChatBot from '../../features/dvir/screens/chatbot.dvir';
 import DVIRReady from '../../features/dvir/screens/ready.dvir';
 import ForgotPassword from '../../features/account/screens/forgotpassword.screen';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Image } from 'react-native';
 import InitDVIR from '../../features/dvir/screens/init.dvir';
 import LoginScreen from '../../features/account/screens/login.screen';
@@ -15,6 +14,7 @@ import ResetPassword from '../../features/account/screens/resetpassword.screen';
 import RouteList from './../../features/dvir/screens/route.list';
 import SignupChatbot from '../../features/account/screens/signup.chatbot.screen';
 import TabNavigator from './tab.navigation';
+import { TouchableOpacity } from 'react-native';
 import TruckRoute from '../../features/dvir/screens/route.map';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -40,8 +40,8 @@ const AccountNavigator = () => (
     <Stack.Screen
       name="MessagingChat"
       component={MessagingChat}
-      options={{
-        headerLeft:()=>(<Image source={require('../../../assets/back.png')} style={{marginLeft: 20}} />),
+      options={({navigation}) => ({
+        headerLeft:()=>(<TouchableOpacity onPress={()=> navigation.goBack()}><Image source={require('../../../assets/back.png')} style={{marginLeft: 20}} width={20} height={14}/></TouchableOpacity>),
         title: 'Messaging',
         headerStyle: {
           backgroundColor: 'white',
@@ -53,7 +53,7 @@ const AccountNavigator = () => (
         },
         headerTitleAlign: 'center',
         headerShown: true,
-      }}
+      })}
     />
   </Stack.Navigator>
 );
