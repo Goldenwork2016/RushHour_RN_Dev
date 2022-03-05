@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         borderBottomLeftRadius: 25,
-        margin: 10,
+        marginVertical: 10,
+        marginRight: 20,
       },
       floatRight: {
         justifyContent: 'flex-end',

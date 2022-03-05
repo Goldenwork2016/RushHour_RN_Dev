@@ -17,10 +17,10 @@ export default PeerBubble;
 
 const styles = StyleSheet.create({
   peerContainer: {
-    backgroundColor: colors.bg.tertiary,
+    backgroundColor: '#F4F6FB',
     color: colors.text.dark,
     padding: 20,
-    width: '70%',
+    width: '60%',
     marginLeft: 20,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,

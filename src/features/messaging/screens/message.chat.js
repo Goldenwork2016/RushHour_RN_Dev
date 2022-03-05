@@ -15,7 +15,7 @@ const getWidth = Dimensions.get('window').width;
 const MessagingChat = ({navigation}) => {
 const scrollViewRef = useRef();
   const [typeMessage, setMessage] = useState('');
-  const [messages, setMessages] =useState([
+  const [messages, setMessages] = useState([
     'Hi',
     'Hello',
   ]);
