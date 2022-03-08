@@ -9,6 +9,8 @@ import React from 'react';
 import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
+import HosScreen from '../../features/hos/screens/hos.screen';
+import SettingStackNav from './setting.stack.nav';
 
 const TAB_ICON = {
   Orders: require('../../../assets/order.png'),
@@ -150,10 +152,10 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Das"
-        component={DashboardScreen}
+        name="Dashboard"
+        component={SettingStackNav}
         options={({route}) => ({
-          title: 'Dashboard',
+          headerShown: false,
           headerStyle: {
             backgroundColor: '#F4F6FB',
           },

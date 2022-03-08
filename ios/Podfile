@@ -12,6 +12,8 @@ target 'RushHour_RN_Dev' do
     :hermes_enabled => false
   )
 
+
+
   target 'RushHour_RN_DevTests' do
     inherit! :complete
     # Pods for testing
@@ -30,3 +32,5 @@ target 'RushHour_RN_Dev' do
 end
 
 pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+permissions_path = '../node_modules/react-native-permissions/ios'
+pod 'Permission-Camera', :path => "#{permissions_path}/Camera"

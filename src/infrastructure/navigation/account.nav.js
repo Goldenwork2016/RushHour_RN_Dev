@@ -55,6 +55,7 @@ const AccountNavigator = () => (
         headerShown: true,
       })}
     />
+
   </Stack.Navigator>
 );
 

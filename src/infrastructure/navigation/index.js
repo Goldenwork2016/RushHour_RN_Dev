@@ -1,8 +1,6 @@
-/* eslint-disable prettier/prettier */
-
-import AccountNavigator from './account.nav';
-import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import AccountNavigator from './account.nav';
 import TabNavigator from './tab.navigation';
 
 const Navigation = ({user}) => {
