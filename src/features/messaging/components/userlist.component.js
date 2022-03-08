@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import styled from 'styled-components/native';
@@ -27,10 +29,10 @@ const ImageContainer = styled.View`
   padding-right: ${props => props.theme.space[4]};
 `;
 
-const UserList = ({item}) => {
+const UserList = ({item, navigation}) => {
   return (
     <UserListContainer
-      style={item.index === 0 ? styles.dispatcherImg : styles.userImg}>
+      style={item.index === 0 ? styles.dispatcherImg : styles.userImg} onPress={()=> navigation.navigate('MessagingChat')}>
       <ImageContainer>
         <ImageUser
           style={item.index === 0 ? styles.dispatcher : styles.user}
@@ -39,7 +41,7 @@ const UserList = ({item}) => {
       </ImageContainer>
       <UserInfo
         style={item.index === 0 ? styles.dispatcherInfo : styles.userInfo}>
-        <UserName>Haary wings</UserName>
+       <UserName>Haary wings</UserName>
         <TruckText>Truck 231</TruckText>
       </UserInfo>
     </UserListContainer>

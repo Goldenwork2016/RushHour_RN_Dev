@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
-import {View, Text, FlatList, Image} from 'react-native';
-import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+/* eslint-disable prettier/prettier */
 
-import {space} from '../../../infrastructure/theme/spacing';
-import {colors} from '../../../infrastructure/theme/colors';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+
+import Icon from 'react-native-vector-icons/Ionicons';
 import UserList from '../components/userlist.component';
+import {colors} from '../../../infrastructure/theme/colors';
+import {space} from '../../../infrastructure/theme/spacing';
+import styled from 'styled-components/native';
 
 const MainContainer = styled.View``;
 const SearchBarContainer = styled.View`
@@ -47,7 +49,7 @@ const ChatListView = styled(FlatList).attrs({
   paddingBottom: 32,
 })``;
 
-const MessageScreen = () => {
+const MessageScreen = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const onChangeSearch = query => setSearchQuery(query);
@@ -67,7 +69,7 @@ const MessageScreen = () => {
           ListFooterComponent={<View />}
           ListFooterComponentStyle={{height: 150}}
           data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
-          renderItem={(item, index) => <UserList item={item} index={index} />}
+          renderItem={(item, index) => <UserList item={item} index={index} navigation={navigation}/>}
         />
       </ChatContainer>
     </MainContainer>
