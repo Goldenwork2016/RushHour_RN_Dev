@@ -4,7 +4,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 
 import Loading from './src/components/loading/LoadingComponent';
 import Navigation from './src/infrastructure/navigation';
@@ -13,32 +13,46 @@ import SplashScreen from './src/components/loading/splash.screen';
 import {StatusBar} from 'react-native';
 import {ThemeProvider} from 'styled-components/native';
 import {theme} from './src/infrastructure/theme';
+import {AuthContext} from './src/services/auth/auth.context';
 
 const App = () => {
   const [isLoad, setIsLoad] = useState(false);
   const [isSplash, setIssplash] = useState(false);
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(null);
 
-  setTimeout(() => {
-    setIssplash(true);
-  }, 1000);
+  const authContext = useMemo(() => ({
+    signIn: () => {
+      setUser('yes');
+    },
+    signOut: () => {
+      setUser(null);
+    },
+  }));
 
-  setTimeout(() => {
-    setIsLoad(true);
-  }, 3000);
+  useEffect(() => {
+    setTimeout(() => {
+      setIssplash(true);
+    }, 1000);
+
+    setTimeout(() => {
+      setIsLoad(true);
+    }, 3000);
+  }, []);
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider theme={theme}>
-        {isLoad && isSplash ? (
-          <Navigation user={user} />
-        ) : !isSplash && !isLoad ? (
-          <SplashScreen />
-        ) : (
-          <Loading />
-        )}
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <AuthContext.Provider value={authContext}>
+        <ThemeProvider theme={theme}>
+          {isLoad && isSplash ? (
+            <Navigation user={user} />
+          ) : !isSplash && !isLoad ? (
+            <SplashScreen />
+          ) : (
+            <Loading />
+          )}
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </AuthContext.Provider>
     </SafeAreaProvider>
   );
 };

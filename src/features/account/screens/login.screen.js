@@ -8,7 +8,7 @@ import {
   SubmitButton,
 } from '../components/accounts.styles';
 import {LockIcon, Lockbackground} from '../components/loginbackground.styles';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Image} from 'react-native';
@@ -16,13 +16,8 @@ import ImputForm from '../../../components/form-control/InputFormComponent';
 import {colors} from '../../../infrastructure/theme/colors';
 import styled from 'styled-components/native';
 
+import {AuthContext} from '../../../services/auth/auth.context';
 //import {Ionicons} from '@expo/vector-icons';
-
-
-
-
-
-
 
 const LoginContiner = styled.View`
   justify-content: center;
@@ -80,6 +75,7 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const {signIn} = useContext(AuthContext);
 
   return (
     <Lockbackground resizeMode="cover">
@@ -178,7 +174,7 @@ const Login = ({navigation}) => {
 
               <CheckboxLabel>I agree to the terms and conditions</CheckboxLabel>
             </CheckboxContainer>
-            <OnTouch onPress={() => navigation.navigate('Dashboard')}>
+            <OnTouch onPress={signIn}>
               <SubmitButton resizeMode="cover">
                 <ButtonText>Sign In</ButtonText>
               </SubmitButton>

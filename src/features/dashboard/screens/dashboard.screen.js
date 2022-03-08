@@ -9,7 +9,7 @@ import {
   ImageIcon,
 } from '../components/dashboard.styles';
 
-const DashboardScreen = () => {
+const DashboardScreen = ({navigation}) => {
   return (
     <>
       <DashboardText>See everything at a glance</DashboardText>
@@ -55,7 +55,7 @@ const DashboardScreen = () => {
             />
             <BoxText>Violations</BoxText>
           </ItemBox>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('Setting')}>
             <ImageIcon
               source={require('../../../../assets/settings.png')}
               style={{width: 60, height: 60}}

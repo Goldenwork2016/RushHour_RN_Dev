@@ -33,7 +33,7 @@ const AccountNavigator = () => (
     <Stack.Screen name="DVIRChatBot" component={DVIRChatBot} />
     <Stack.Screen name="RouteList" component={RouteList} />
     <Stack.Screen name="TruckRoute" component={TruckRoute} />
-    <Stack.Screen name="Dashboard" component={TabNavigator} />
+    {/* <Stack.Screen name="Dashboard" component={TabNavigator} /> */}
   </Stack.Navigator>
 );
 

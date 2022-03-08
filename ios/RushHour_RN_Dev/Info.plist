@@ -70,5 +70,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+  <key>NSCameraUsageDescription</key>
+  <string>RushHour need a permission to use the camera</string>
+
+  <!-- Include this only if you are planning to use the camera roll -->
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Rushhour need a permission to use the library</string>
+
+  <!-- Include this only if you are planning to use the microphone for video recording -->
+  <key>NSMicrophoneUsageDescription</key>
+  <string>RushHour need a permission to use the microphone</string>
 </dict>
 </plist>
