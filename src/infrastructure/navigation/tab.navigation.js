@@ -9,6 +9,7 @@ import DashboardScreen from '../../features/dashboard/screens/dashboard.screen';
 import MessageScreen from '../../features/messaging/screens/message.screen';
 import OrderScreen from '../../features/orders/screens/order.screen';
 import HosScreen from '../../features/hos/screens/hos.screen';
+import SettingStackNav from './setting.stack.nav';
 
 const TAB_ICON = {
   Orders: require('../../../assets/order.png'),
@@ -150,10 +151,10 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Das"
-        component={DashboardScreen}
+        name="Dashboard"
+        component={SettingStackNav}
         options={({route}) => ({
-          title: 'Dashboard',
+          headerShown: false,
           headerStyle: {
             backgroundColor: '#F4F6FB',
           },
