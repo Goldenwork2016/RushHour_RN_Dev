@@ -9,7 +9,6 @@ import React from 'react';
 import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
-import HosScreen from '../../features/hos/screens/hos.screen';
 import SettingStackNav from './setting.stack.nav';
 
 const TAB_ICON = {
@@ -28,15 +27,6 @@ const ImageIcon = styled.Image`
 const isIos = Platform.OS === 'ios';
 
 function Voice() {
-  return (
-    <>
-      <Text>setting Details Voice</Text>
-      <Icon name="md-checkmark-circle" size={32} color="green" />
-    </>
-  );
-}
-
-function Hos() {
   return (
     <>
       <Text>setting Details Voice</Text>

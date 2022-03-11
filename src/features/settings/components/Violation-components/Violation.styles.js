@@ -20,7 +20,7 @@ export const Trainingheader = styled.View`
   margin-bottom: ${props => props.theme.space[3]};
 `;
 
-export const VideoList = styled.View`
+export const VideoList = styled.TouchableOpacity`
   width: 138px;
   height: 149px;
   border: 0.2px solid #000000;
@@ -73,3 +73,5 @@ export const WatchStatus = styled.Image`
   right: 10px;
   bottom: 10px;
 `;
+
+export const SeeAll = styled.TouchableOpacity``;

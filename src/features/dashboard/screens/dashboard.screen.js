@@ -15,7 +15,7 @@ const DashboardScreen = ({navigation}) => {
       <DashboardText>See everything at a glance</DashboardText>
       <MainContainer>
         <BoxContainer>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('NearByRestStop')}>
             <ImageIcon
               source={require('../../../../assets/reststops.png')}
               style={{width: 68, height: 70}}
@@ -23,7 +23,7 @@ const DashboardScreen = ({navigation}) => {
             <BoxText>Nearest</BoxText>
             <BoxText>reststops</BoxText>
           </ItemBox>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('Trainings')}>
             <ImageIcon
               source={require('../../../../assets/trainings.png')}
               style={{width: 46, height: 70}}
@@ -32,14 +32,14 @@ const DashboardScreen = ({navigation}) => {
           </ItemBox>
         </BoxContainer>
         <BoxContainer>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('Music')}>
             <ImageIcon
               source={require('../../../../assets/music.png')}
               style={{width: 59, height: 70}}
             />
             <BoxText>Music</BoxText>
           </ItemBox>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('Game')}>
             <ImageIcon
               source={require('../../../../assets/game.png')}
               style={{width: 61, height: 61}}
@@ -48,7 +48,7 @@ const DashboardScreen = ({navigation}) => {
           </ItemBox>
         </BoxContainer>
         <BoxContainer>
-          <ItemBox>
+          <ItemBox onPress={() => navigation.navigate('Violation')}>
             <ImageIcon
               source={require('../../../../assets/violations.png')}
               style={{width: 66, height: 60, margin: 10}}
