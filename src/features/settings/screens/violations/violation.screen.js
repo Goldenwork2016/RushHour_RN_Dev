@@ -17,9 +17,10 @@ import {
   OnTouch,
   PlayButton,
   WatchStatus,
+  SeeAll,
 } from '../../components/Violation-components/Violation.styles';
 
-const ViolationScreen = () => {
+const ViolationScreen = ({navigation}) => {
   const [watched, setWatched] = useState(false);
   return (
     <OnScroll vertical>
@@ -27,10 +28,12 @@ const ViolationScreen = () => {
         <TrainingVideos>
           <Trainingheader>
             <TitleText>Suggested Trainings</TitleText>
-            <TrainingText>See all</TrainingText>
+            <SeeAll onPress={() => navigation.navigate('Trainings')}>
+              <TrainingText>See all</TrainingText>
+            </SeeAll>
           </Trainingheader>
           <OnScroll horizontal>
-            <VideoList>
+            <VideoList onPress={() => navigation.navigate('VideoPlayer')}>
               <PlayButton source={Play} />
               <WatchStatus source={watched ? WatchIcon : PlayInComplete} />
             </VideoList>
@@ -55,7 +58,7 @@ const ViolationScreen = () => {
               Corner of Swift Village and Veterens Ave.
             </TrainingText>
             <TrainingText>11/20/20</TrainingText>
-            <OnTouch>
+            <OnTouch onPress={() => navigation.navigate('ViolationPlayer')}>
               <TrainingText>View violation on dash cam</TrainingText>
             </OnTouch>
           </ViolationList>
