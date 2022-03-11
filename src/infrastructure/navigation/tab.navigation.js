@@ -10,6 +10,7 @@ import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
 import SettingStackNav from './setting.stack.nav';
+import MessagingStackNav from './messaging.stack';
 
 const TAB_ICON = {
   Orders: require('../../../assets/order.png'),
@@ -101,8 +102,9 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Messages"
-        component={MessageScreen}
+        component={MessagingStackNav}
         options={({route}) => ({
+          headerShown: false,
           title: 'Messaging',
           headerTitleStyle: {
             alignSelf: 'center',
