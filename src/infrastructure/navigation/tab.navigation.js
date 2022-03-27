@@ -6,11 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MessageScreen from '../../features/messaging/screens/message.screen';
 import OrderScreen from '../../features/orders/screens/order.screen';
 import React from 'react';
+import SettingStackNav from './setting.stack.nav';
 import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
-import HosScreen from '../../features/hos/screens/hos.screen';
-import SettingStackNav from './setting.stack.nav';
 
 const TAB_ICON = {
   Orders: require('../../../assets/order.png'),
