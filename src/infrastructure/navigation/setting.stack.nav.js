@@ -4,6 +4,7 @@ import {Dimensions} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import styled from 'styled-components/native';
 
+//  Handle All Dashboard Navigations Stack
 import Backarrow from '../../../assets/backarrow.png';
 import SettingScreen from '../../features/settings/screens/setting.screen';
 import Dashboard from '../../features/dashboard/screens/dashboard.screen';
@@ -19,6 +20,13 @@ import ScanScreen from '../../features/settings/screens/scan/scan.screen';
 import BarCodeScannerScreen from '../../features/settings/screens/scan/barcode.scanner.screen';
 import AchievmentScreen from '../../features/settings/screens/user-achievments/achievments.screen';
 import LogoutScreen from '../../features/settings/screens/logout/logout.screen';
+import NearByRestStopScreen from '../../features/nearbyreststops/screen/nearbyreststops.screen';
+import SuggestedTrainingScreen from '../../features/trainings/screens/suggested.trainings.screen';
+import GameScreen from '../../features/games/screens/game.screen';
+import MusicScreen from '../../features/music/screens/music.screen';
+import VideoPlayerScreen from '../../features/trainings/screens/video.player.screen';
+import ViolationPlayerScreen from '../../features/settings/screens/violations/violation.player.screen';
+
 
 const Stack = createStackNavigator();
 
@@ -341,6 +349,133 @@ const SettingStackNav = () => (
         title: 'Log Out',
         headerStyle: {
           backgroundColor: '#F4F6FB',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="NearByRestStop"
+      component={NearByRestStopScreen}
+      options={({navigation}) => ({
+        title: 'Nearby Rest Stops',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+
+    <Stack.Screen
+      name="Trainings"
+      component={SuggestedTrainingScreen}
+      options={({navigation}) => ({
+        title: 'Suggested Trainings',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="Music"
+      component={MusicScreen}
+      options={({navigation}) => ({
+        title: 'Music',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="Game"
+      component={GameScreen}
+      options={({navigation}) => ({
+        title: 'Games',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="VideoPlayer"
+      component={VideoPlayerScreen}
+      options={({navigation}) => ({
+        title: 'Ttile 1',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          alignSelf: 'center',
+          fontWeight: 'bold',
+          fontSize: 24,
+        },
+        headerLeft: () => (
+          <OnTouch onPress={navigation.goBack}>
+            <BackArrow />
+          </OnTouch>
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="ViolationPlayer"
+      component={ViolationPlayerScreen}
+      options={({navigation}) => ({
+        title: 'Violation - 11/20/20',
+        headerStyle: {
+          backgroundColor: '#FFFFFF',
         },
         headerTitleAlign: 'center',
         headerTitleStyle: {
