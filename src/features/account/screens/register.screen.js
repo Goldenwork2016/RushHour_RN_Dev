@@ -6,8 +6,6 @@ import * as register from '../../../store/actions/auth';
 import {
   ActivityIndicator,
   Alert,
-  KeyboardAvoidingView,
-  ScrollView,
 } from 'react-native';
 import {
   AuthContainer,
@@ -25,6 +23,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImputForm from '../../../components/form-control/InputFormComponent';
+import { ScrollView } from 'react-native-gesture-handler';
 import {colors} from '../../../infrastructure/theme/colors';
 import styled from 'styled-components/native';
 import {useDispatch} from 'react-redux';
@@ -136,17 +135,11 @@ const Register = ({navigation}) => {
     [dispatchFormState],
   );
   return (
-    // <ScrollView contentContainerStyle={ {flex: 1, justifyContent: 'center', alignContent: 'center', alignItems: 'center', backgroundColor: 'white', paddingVertical: 15}}>
-    // <KeyboardAvoidingView
-    //   behavior="padding"
-    //   keyboardVerticalOffset={50}
-    //   style={{flex: 1}}
-    // >
     <MainContiner>
       <HeadingContainer>
         <Title>Registration</Title>
       </HeadingContainer>
-
+      <ScrollView>
       <AuthContainer>
         <ImputForm
           autoCapitalize="none"
@@ -235,9 +228,8 @@ const Register = ({navigation}) => {
           </SubmitButton>
         </OnTouch>)}
       </AuthContainer>
+      </ScrollView>
     </MainContiner>
-    // </KeyboardAvoidingView>
-    // </ScrollView>
   );
 };
 
