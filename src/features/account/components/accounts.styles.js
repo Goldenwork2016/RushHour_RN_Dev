@@ -13,7 +13,7 @@ export const HeadingContainer = styled.View`
   align-items: center;
 `;
 
-export const AuthContainer = styled.ScrollView``;
+export const AuthContainer = styled.View``;
 
 export const Group = styled.View``;
 
