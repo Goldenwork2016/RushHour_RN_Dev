@@ -4,15 +4,13 @@ import DashboardScreen from '../../features/dashboard/screens/dashboard.screen';
 import HosScreen from '../../features/hos/screens/hos.screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MessageScreen from '../../features/messaging/screens/message.screen';
+import MessagingStackNav from './messaging.stack';
 import OrderScreen from '../../features/orders/screens/order.screen';
 import React from 'react';
 import SettingStackNav from './setting.stack.nav';
 import {Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
-
-import SettingStackNav from './setting.stack.nav';
-import MessagingStackNav from './messaging.stack';
 
 const TAB_ICON = {
   Orders: require('../../../assets/order.png'),

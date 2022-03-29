@@ -104,6 +104,7 @@ const Register = ({navigation}) => {
 
   const registerHandler = async () => {
     let action;
+    
     action = register.signup(
       formState.inputValues.email,
       formState.inputValues.password,
@@ -139,7 +140,7 @@ const Register = ({navigation}) => {
       <HeadingContainer>
         <Title>Registration</Title>
       </HeadingContainer>
-      <ScrollView>
+      {/* <ScrollView> */}
       <AuthContainer>
         <ImputForm
           autoCapitalize="none"
@@ -147,6 +148,7 @@ const Register = ({navigation}) => {
           label="Fleet ID"
           name="fleetId"
           placeholder="Fleet ID"
+          autoComplete="off"
           // value={fleetId}
           errorText="Please enter a your fleetId!"
           keyboardType="default"
@@ -158,6 +160,7 @@ const Register = ({navigation}) => {
           autoCapitalize="none"
           id="name"
           label="Name"
+          autoComplete="off"
           name="name"
           placeholder="Name"
           errorText="Please enter your name!"
@@ -168,6 +171,7 @@ const Register = ({navigation}) => {
           autoCapitalize="none"
           label="Email Address"
           name="email"
+          autoComplete="off"
           placeholder="Email Address"
           id="email"
           errorText="Please enter a valid email!"
@@ -180,6 +184,7 @@ const Register = ({navigation}) => {
           autoCapitalize="none"
           id="username"
           label="Username"
+          autoComplete="off"
           name="username"
           placeholder="Username"
           errorText="Please enter your username!"
@@ -192,6 +197,7 @@ const Register = ({navigation}) => {
             id="password"
             label="Password"
             name="password"
+            autoComplete="off"
             placeholder="Password"
             errorText="Please enter a valid password."
             secureTextEntry={secureTextEntry}
@@ -228,7 +234,7 @@ const Register = ({navigation}) => {
           </SubmitButton>
         </OnTouch>)}
       </AuthContainer>
-      </ScrollView>
+      {/* </ScrollView> */}
     </MainContiner>
   );
 };
