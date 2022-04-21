@@ -3,10 +3,7 @@
 
 import * as register from '../../../store/actions/auth';
 
-import {
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import {ActivityIndicator, Alert} from 'react-native';
 import {
   AuthContainer,
   ButtonText,
@@ -14,16 +11,10 @@ import {
   OnTouch,
   SubmitButton,
 } from '../components/accounts.styles';
-import React, {
-  useCallback,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImputForm from '../../../components/form-control/InputFormComponent';
-import { ScrollView } from 'react-native-gesture-handler';
 import {colors} from '../../../infrastructure/theme/colors';
 import styled from 'styled-components/native';
 import {useDispatch} from 'react-redux';
@@ -68,11 +59,6 @@ const formReducer = (state, action) => {
   return state;
 };
 const Register = ({navigation}) => {
-  // const [fleetId, setFleetId] = useState('');
-  // const [user, setUser] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [username, setUsername] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
@@ -103,20 +89,29 @@ const Register = ({navigation}) => {
   }, [error]);
 
   const registerHandler = async () => {
-    let action;
-    
-    action = register.signup(
+    let registerAction;
+    let loginAction;
+
+    registerAction = register.signup(
       formState.inputValues.email,
       formState.inputValues.password,
-      formState.inputValues.name,
-      formState.inputValues.username,
+      formState.inputValues.firstName,
+      formState.inputValues.lastName,
+      // formState.inputValues.username,
       formState.inputValues.fleetId,
+    );
+
+    loginAction = register.login(
+      formState.inputValues.fleetId,
+      formState.inputValues.email,
+      formState.inputValues.password,
+      // formState.inputValues.username,
     );
     setError(null);
     setIsLoading(true);
     try {
-      await dispatch(action);
-      console.log('success');
+      await dispatch(registerAction);
+      await dispatch(loginAction);
       navigation.navigate('SignupChatbot');
     } catch (err) {
       setError(err.message);
@@ -158,12 +153,23 @@ const Register = ({navigation}) => {
 
         <ImputForm
           autoCapitalize="none"
-          id="name"
-          label="Name"
+          id="firstName"
+          label="First Name"
           autoComplete="off"
-          name="name"
-          placeholder="Name"
-          errorText="Please enter your name!"
+          name="firstName"
+          placeholder="First Name"
+          errorText="Please enter your first name!"
+          // value={user}
+          onInputChange={inputChangeHandler}
+        />
+        <ImputForm
+          autoCapitalize="none"
+          id="lastName"
+          label="Last Name"
+          autoComplete="off"
+          name="lastName"
+          placeholder="Last Name"
+          errorText="Please enter your last name!"
           // value={user}
           onInputChange={inputChangeHandler}
         />
@@ -180,7 +186,7 @@ const Register = ({navigation}) => {
           email
           onInputChange={inputChangeHandler}
         />
-        <ImputForm
+        {/* <ImputForm
           autoCapitalize="none"
           id="username"
           label="Username"
@@ -190,7 +196,7 @@ const Register = ({navigation}) => {
           errorText="Please enter your username!"
           required
           onInputChange={inputChangeHandler}
-        />
+        /> */}
         <Group>
           <ImputForm
             autoCapitalize="none"
@@ -226,13 +232,14 @@ const Register = ({navigation}) => {
 
         {/* <OnTouch onPress={() => navigation.navigate('SignupChatbot')}> */}
         {isLoading ? (
-                <ActivityIndicator size="small" color="#4CB75C" />
-              ) : (
-        <OnTouch onPress={registerHandler}>
-          <SubmitButton resizeMode="cover">
-            <ButtonText>Sign Up</ButtonText>
-          </SubmitButton>
-        </OnTouch>)}
+          <ActivityIndicator size="small" color="#4CB75C" />
+        ) : (
+          <OnTouch onPress={registerHandler}>
+            <SubmitButton resizeMode="cover">
+              <ButtonText>Sign Up</ButtonText>
+            </SubmitButton>
+          </OnTouch>
+        )}
       </AuthContainer>
       {/* </ScrollView> */}
     </MainContiner>

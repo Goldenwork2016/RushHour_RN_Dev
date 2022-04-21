@@ -2,17 +2,22 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
 
+import * as signup3 from './../../../store/actions/auth';
+
 import {
+  Alert,
   Image,
   ImageBackground,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import React, {useEffect, useRef, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../components/chatbot/botChatBubble';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -22,11 +27,31 @@ import SelectButton from '../components/chatbot/select.button';
 import ToolContainer from '../components/chatbot/bottom.tool.container';
 import UserChatBubble from '../components/chatbot/userChatBubble';
 import {colors} from '../../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
+import {useDispatch} from 'react-redux';
 
+const Input = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
+    width: 350px;
+    height: ${props => props.theme.sizes[5]};
+    margin-bottom: ${props => props.theme.space[1]};
+    padding-left: ${props => props.theme.space[3]};
+    padding-right: ${props => props.theme.space[3]};
+    padding-top: ${props => props.theme.space[2]}
+    padding-bottom: ${props => props.theme.space[2]}
+    font-size: ${props => props.theme.sizes[1]};
+    background-color: #f4f6fb;
+    border-radius: 12px;
+    font-size: ${props => props.theme.fontSizes.text};
+     color: ${props => props.theme.colors.text.dark};
+`;
 const RegistrationTruckInfo = ({navigation}) => {
   const scrollViewRef = useRef();
   const [steps, setStep] = useState(1);
   const [vehicleBrand, setVehicleBrand] = useState('');
+  const [vehicleToDisplay, setvehicleToDisplay] = useState('');
+  const [vehicleToDisplayError, setvehicleToDisplayError] = useState(false);
   const [plateNumber, setPlateNumber] = useState('');
   const [plateNumberError, setPlateNumberError] = useState(false);
   const [truck, setTruck] = useState('');
@@ -34,7 +59,65 @@ const RegistrationTruckInfo = ({navigation}) => {
   const [registrationCard, setRegistrationCard] = useState(null);
   const [insuranceCard, setInsuranceCard] = useState(null);
 
+  const [fName, setFName] = useState();
+  const [lName, setLName] = useState();
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    _firstName();
+    if (error) {
+      Alert.alert('An Error Occurred!', error, [{text: 'Okay'}]);
+    }
+    // fetchCat();
+    // fetchProduct();
+  }, [error]);
+  const _firstName = async () => {
+    try {
+      const firName = await AsyncStorage.getItem('firstName');
+      const lasName = await AsyncStorage.getItem('lastName');
+      if (firName !== null && lasName !== null) {
+        setFName(firName);
+        setLName(lasName);
+      }
+    } catch (e) {
+      // Error retrieving data'
+      console.log('error occur');
+    }
+  };
+  const submit = async (insurCard) => {
+    let action;
+    action = signup3.signup3(
+      fName,
+      lName,
+      vehicleBrand,
+      plateNumber,
+      driverLicense,
+      registrationCard,
+      insurCard,
+      vehicleToDisplay,
+    );
 
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      console.log('success');
+      navigation.navigate('InitDVIR');
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+  // useEffect(() => {
+  //   _firstName();
+  //   if (steps === 7) {
+  //     submit();
+  //   }
+  //   // fetchCat();
+  //   // fetchProduct();
+  // },[steps] );
   return (
     <View style={styles.container}>
       <ScrollView
@@ -76,13 +159,18 @@ const RegistrationTruckInfo = ({navigation}) => {
             </UserChatBubble>
             <View style={styles.spacer} />
             <BotChatBubble text="Choose a vehicle to display" />
+            {vehicleToDisplayError && (
+              <View>
+                <BotChatBubble text="License plate number is required. Whats your license plate number?" />
+              </View>
+            )}
           </View>
         )}
         {steps > 3 && (
           <View>
             <UserChatBubble>
-              <Text style={styles.textWhite}>I like this one</Text>
-              {truck === 'truck1' && (
+              <Text style={styles.textWhite}>{vehicleToDisplay}</Text>
+              {/* {truck === 'truck1' && (
                 <View
                   style={{backgroundColor: 'white', padding: 20, marginTop: 5}}>
                   <Image source={require('../../../../assets/truck1.png')} />
@@ -105,7 +193,7 @@ const RegistrationTruckInfo = ({navigation}) => {
                   style={{backgroundColor: 'white', padding: 20, marginTop: 5}}>
                   <Image source={require('../../../../assets/truck4.png')} />
                 </View>
-              )}
+              )} */}
             </UserChatBubble>
             <View style={styles.spacer} />
             <BotChatBubble text="Three more steps to completion!" />
@@ -215,7 +303,7 @@ const RegistrationTruckInfo = ({navigation}) => {
             height: 100,
           }}>
           <View>
-            <InputForm
+            <Input
               // style={{flex: 1}}
               autoCapitalize="none"
               name="platenumber"
@@ -234,82 +322,114 @@ const RegistrationTruckInfo = ({navigation}) => {
                 }
               }}
               color="#4CB75C"
-              style={{position: 'absolute', right: 15, top: 40}}
+              style={{position: 'absolute', right: 15, top: 10}}
             />
           </View>
         </View>
       )}
       {steps === 3 && (
-        <ToolContainer>
-          <View style={styles.rowCon}>
-            <TouchableOpacity
-              onPress={() => {
-                setTruck('truck1');
+        <View
+        style={{
+          backgroundColor: colors.bg.quaternary,
+          padding: 10,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 100,
+        }}>
+        <View>
+          <Input
+            // style={{flex: 1}}
+            autoCapitalize="none"
+            name="vehicleToDisplay"
+            placeholder="eg. Peterbilt, 579"
+            value={vehicleToDisplay}
+            onChangeText={text => setvehicleToDisplay(text)}
+          />
+          <Icon
+            name="send"
+            size={30}
+            onPress={() => {
+              if (vehicleToDisplay.length < 1) {
+                setvehicleToDisplayError(true);
+              } else {
                 setStep(4);
-              }}>
-              <View style={styles.truck}>
-                <Image
-                  source={require('../../../../assets/truck1.png')}
-                  style={{
-                    resizeMode: 'contain',
-                  }}
-                  width={90}
-                  height={50}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setTruck('truck2');
-                setStep(4);
-              }}>
-              <View style={styles.truck}>
-                <Image
-                  source={require('../../../../assets/truck2.png')}
-                  style={{
-                    resizeMode: 'contain',
-                  }}
-                  width={90}
-                  height={50}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.rowCon}>
-            <TouchableOpacity
-              onPress={() => {
-                setTruck('truck3');
-                setStep(4);
-              }}>
-              <View style={styles.truck}>
-                <Image
-                  source={require('../../../../assets/truck3.png')}
-                  style={{
-                    resizeMode: 'contain',
-                  }}
-                  width={90}
-                  height={50}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setTruck('truck4');
-                setStep(4);
-              }}>
-              <View style={styles.truck}>
-                <Image
-                  source={require('../../../../assets/truck4.png')}
-                  style={{
-                    resizeMode: 'contain',
-                  }}
-                  width={90}
-                  height={50}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </ToolContainer>
+              }
+            }}
+            color="#4CB75C"
+            style={{position: 'absolute', right: 15, top: 10}}
+          />
+        </View>
+      </View>
+        // <ToolContainer>
+        //   <View style={styles.rowCon}>
+        //     <TouchableOpacity
+        //       onPress={() => {
+        //         setTruck('truck1');
+        //         setStep(4);
+        //       }}>
+        //       <View style={styles.truck}>
+        //         <Image
+        //           source={require('../../../../assets/truck1.png')}
+        //           style={{
+        //             resizeMode: 'contain',
+        //           }}
+        //           width={90}
+        //           height={50}
+        //         />
+        //       </View>
+        //     </TouchableOpacity>
+        //     <TouchableOpacity
+        //       onPress={() => {
+        //         setTruck('truck2');
+        //         setStep(4);
+        //       }}>
+        //       <View style={styles.truck}>
+        //         <Image
+        //           source={require('../../../../assets/truck2.png')}
+        //           style={{
+        //             resizeMode: 'contain',
+        //           }}
+        //           width={90}
+        //           height={50}
+        //         />
+        //       </View>
+        //     </TouchableOpacity>
+        //   </View>
+        //   <View style={styles.rowCon}>
+        //     <TouchableOpacity
+        //       onPress={() => {
+        //         setTruck('truck3');
+        //         setStep(4);
+        //       }}>
+        //       <View style={styles.truck}>
+        //         <Image
+        //           source={require('../../../../assets/truck3.png')}
+        //           style={{
+        //             resizeMode: 'contain',
+        //           }}
+        //           width={90}
+        //           height={50}
+        //         />
+        //       </View>
+        //     </TouchableOpacity>
+        //     <TouchableOpacity
+        //       onPress={() => {
+        //         setTruck('truck4');
+        //         setStep(4);
+        //       }}>
+        //       <View style={styles.truck}>
+        //         <Image
+        //           source={require('../../../../assets/truck4.png')}
+        //           style={{
+        //             resizeMode: 'contain',
+        //           }}
+        //           width={90}
+        //           height={50}
+        //         />
+        //       </View>
+        //     </TouchableOpacity>
+        //   </View>
+        // </ToolContainer>
       )}
       {steps === 4 && (
         <PickPicture
@@ -383,8 +503,10 @@ const RegistrationTruckInfo = ({navigation}) => {
               multiple: false,
             }).then(async image => {
               setInsuranceCard(image.path);
+              // console.log(insuranceCard);
+              // navigation.navigate('InitDVIR');
+              await submit(image.path);
               setStep(7);
-              navigation.navigate('InitDVIR');
             });
           }}
           choosePhotoFromLibrary={() => {
@@ -395,10 +517,13 @@ const RegistrationTruckInfo = ({navigation}) => {
               mediaType: 'photo',
               multiple: false,
               compressImageQuality: 0.7,
-            }).then(image => {
-              setInsuranceCard(image.path);
+            }).then(async image => {
+               setInsuranceCard(image.path);
+              // console.log(insuranceCard);
+              // navigation.navigate('InitDVIR');
+              await submit(image.path);
               setStep(7);
-              navigation.navigate('InitDVIR');
+              // submit();
             });
           }}
         />

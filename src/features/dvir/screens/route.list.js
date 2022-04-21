@@ -10,60 +10,62 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import React, {useEffect, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ButtonSubmit from '../components/button';
 import {Divider} from 'react-native-elements';
-import React from 'react';
 
 const getWidth = Dimensions.get('window').width;
-const getHeight = Dimensions.get('window').height;
+// const getHeight = Dimensions.get('window').height;
 
-const DATA = [
-  {
-    id: '1',
-  },
-  {
-    id: '2',
-  },
-  {
-    id: '3',
-  },
-  {
-    id: '4',
-  },
-  {
-    id: '5',
-  },
-  {
-    id: '7',
-  },
-  {
-    id: '8',
-  },
-  {
-    id: '9',
-  },
-];
-const renderList = () => (
-  <View style={{padding: 20}}>
-    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-      <Text style={styles.textBold}>Belle Umo</Text>
-      <Text style={styles.text}>37 min</Text>
-    </View>
-    <Text style={(styles.text, {color: '#93929A'})}>7958 Swift Village</Text>
-    <Text style={(styles.text, {color: '#93929A'})}>Order 15769839</Text>
-    <View style={styles.spacer} />
-    <Divider />
-  </View>
-);
-const List = () => (
-  <FlatList
-    data={DATA}
-    renderItem={renderList}
-    keyExtractor={item => item.id}
-  />
-);
+
+
 const RouteList = ({navigation}) => {
+  const [routes, setRoutes] = useState([]);
+  const [listR, setListR] = useState([]);
+
+  const fetchRoutes = async() => {
+    const token = await AsyncStorage.getItem('token');
+    var apiUrl = 'https://beta.rushhourapp.com/api/v1/Routes/Current'; //API to render signup
+
+    var headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    };
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: headers,
+      body: JSON.stringify(),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        const list = response.data.list;
+        const stops = list.flatMap((r) => r.routeStopGroups);
+        const stopItems = stops.flatMap((e) => e.routeItemStops);
+        setRoutes(stopItems);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log('error');
+      });
+  };
+  useEffect(() => {
+    fetchRoutes();
+  }, []);
+  // const renderList = () => (
+  //   <View style={{padding: 20}}>
+  //     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+  //       <Text style={styles.textBold}>Belle Umo</Text>
+  //       <Text style={styles.text}>37 min</Text>
+  //     </View>
+  //     <Text style={(styles.text, {color: '#93929A'})}>7958 Swift Village</Text>
+  //     <Text style={(styles.text, {color: '#93929A'})}>Order 15769839</Text>
+  //     <View style={styles.spacer} />
+  //     <Divider />
+  //   </View>
+  // );
   return (
     <View style={styles.container}>
       {/* {' '} */}
@@ -87,13 +89,23 @@ const RouteList = ({navigation}) => {
           padding: 10,
           backgroundColor: '#4CB75C',
         }}>
-        <Text style={{color: 'white'}}>You have 10 Pickup Locations.</Text>
+        <Text style={{color: 'white'}}>You have {routes.length} Pickup Locations.</Text>
       </ImageBackground>
       <FlatList
-        data={DATA}
+        data={routes}
         style={{width: '100%'}}
-        renderItem={renderList}
-        keyExtractor={item => item.id}
+        renderItem={({item}) => <View style={{padding: 20}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={styles.textBold}>{item.customer.customerName}</Text>
+          {/* <Text style={styles.text}>{item.duration} min</Text> */}
+          {/* <Text style={styles.text}> min</Text> */}
+        </View>
+        <Text style={(styles.text, {color: '#93929A'})}>{item.orderNumber} {item.address.addressLine1}</Text>
+        <Text style={(styles.text, {color: '#93929A'})}>Order #{item.orderId}</Text>
+        <View style={styles.spacer} />
+        <Divider />
+      </View>}
+        keyExtractor={(item, index) => index}
       />
       <ButtonSubmit text="View Route"/>
     </View>

@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
 
 import * as login from '../../../store/actions/auth';
 
@@ -11,20 +12,20 @@ import {
   SubmitButton,
 } from '../components/accounts.styles';
 import {LockIcon, Lockbackground} from '../components/loginbackground.styles';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 
-import {AuthContext} from '../../../services/auth/auth.context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImputForm from '../../../components/form-control/InputFormComponent';
 import {colors} from '../../../infrastructure/theme/colors';
 import styled from 'styled-components/native';
 import {useDispatch} from 'react-redux';
+
+// import {AuthContext} from '../../../services/auth/auth.context';
+
+
+
+
+
 
 //import {Ionicons} from '@expo/vector-icons';
 
@@ -103,9 +104,9 @@ const formReducer = (state, action) => {
 };
 const Login = ({navigation}) => {
   const [checked, setChecked] = useState(false);
-  const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const {signIn} = useContext(AuthContext);
+  // const {signIn} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const dispatch = useDispatch();
@@ -114,7 +115,7 @@ const Login = ({navigation}) => {
     inputValues: {
       fleetId: '',
       username: '',
-      password: '', 
+      password: '',
     },
     inputValidities: {
       fleetId: false,
@@ -132,14 +133,12 @@ const Login = ({navigation}) => {
 
   const loginHandler = async () => {
     let action;
-    console.log('password ' + password);
-    console.log('fleetId ' + formState.inputValues.fleetId);
-    console.log('username ' + formState.inputValues.email);
     action = login.login(
       formState.inputValues.fleetId,
       formState.inputValues.email,
       formState.inputValues.password,
     );
+    console.log(formState.inputValues.password);
     setError(null);
     setIsLoading(true);
     try {
@@ -147,6 +146,7 @@ const Login = ({navigation}) => {
       console.log('success');
       // signIn;
       navigation.navigate('Dashboard');
+      // navigation.navigate('InitDVIR');
       setIsLoading(false);
     } catch (err) {
       setError(err.message);
@@ -218,7 +218,7 @@ const Login = ({navigation}) => {
                 secureTextEntry={secureTextEntry}
                 required
                 // value={password}
-                onChangeText={text => setPassword(text)}
+                // onChangeText={text => setPassword(text)}
                 onInputChange={inputChangeHandler}
               />
               {secureTextEntry ? (

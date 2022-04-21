@@ -14,6 +14,8 @@ target 'RushHour_RN_Dev' do
 
 
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
   target 'RushHour_RN_DevTests' do
     inherit! :complete
     # Pods for testing
