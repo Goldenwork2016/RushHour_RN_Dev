@@ -35,7 +35,30 @@ const LoginContiner = styled.View`
   flex: 1;
   text-align: left;
 `;
-
+const Input = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
+    width: 350px;
+    height: ${props => props.theme.sizes[5]};
+    margin-bottom: ${props => props.theme.space[1]};
+    padding-left: ${props => props.theme.space[3]};
+    padding-right: ${props => props.theme.space[3]};
+    padding-top: ${props => props.theme.space[2]}
+    padding-bottom: ${props => props.theme.space[2]}
+    font-size: ${props => props.theme.sizes[1]};
+    background-color: #f4f6fb;
+    border-radius: 12px;
+    font-size: ${props => props.theme.fontSizes.text};
+     color: ${props => props.theme.colors.text.dark};
+`;
+const InputLabel = styled.Text`
+  text-align: left;
+  margin-left: ${props => props.theme.space[3]};
+  margin-bottom: ${props => props.theme.space[2]};
+  padding-top: ${props => props.theme.space[2]};
+  font-size: ${props => props.theme.fontSizes.text};
+  color: ${props => props.theme.colors.text.dark};
+`;
 const LogoContainer = styled.View`
   margin-bottom: ${props => props.theme.space[4]};
   align-items: center;
@@ -104,7 +127,7 @@ const formReducer = (state, action) => {
 };
 const Login = ({navigation}) => {
   const [checked, setChecked] = useState(false);
-  // const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   // const {signIn} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -136,9 +159,9 @@ const Login = ({navigation}) => {
     action = login.login(
       formState.inputValues.fleetId,
       formState.inputValues.email,
-      formState.inputValues.password,
+      password,
     );
-    console.log(formState.inputValues.password);
+    // console.log(formState.inputValues.password);
     setError(null);
     setIsLoading(true);
     try {
@@ -146,10 +169,10 @@ const Login = ({navigation}) => {
       console.log('success');
       // signIn;
       navigation.navigate('Dashboard');
-      // navigation.navigate('InitDVIR');
+      // navigation.navigate('RouteList');
       setIsLoading(false);
     } catch (err) {
-      setError(err.message);
+      setError('Invalid fleetId/email/password');
       setIsLoading(false);
     }
   };
@@ -206,21 +229,31 @@ const Login = ({navigation}) => {
               required
               onInputChange={inputChangeHandler}
             />
+            <InputLabel>Password</InputLabel>
+        
             <Group>
-              <ImputForm
+            <Input
+          autoCapitalize="none"
+          autoComplete="off"
+          required
+          value={password}
+          onChangeText={text => setPassword(text)}
+          placeholder="Password"
+          secureTextEntry={secureTextEntry}
+                
+        />
+              {/* <ImputForm
                 autoCapitalize="none"
                 id="password"
                 label="Password"
                 autoComplete="off"
-                name="password"
                 placeholder="Password"
-                errorText="Please enter a valid password."
                 secureTextEntry={secureTextEntry}
                 required
-                // value={password}
-                // onChangeText={text => setPassword(text)}
-                onInputChange={inputChangeHandler}
-              />
+                value={password}
+                onChangeText={text => setPassword(text)}
+                // onInputChange={inputChangeHandler}
+              /> */}
               {secureTextEntry ? (
                 <Icon
                   onPress={() => setSecureTextEntry(false)}
@@ -230,7 +263,7 @@ const Login = ({navigation}) => {
                   style={{
                     position: 'absolute',
                     right: 15,
-                    top: 48,
+                    top: 20,
                   }}
                 />
               ) : (
@@ -242,7 +275,7 @@ const Login = ({navigation}) => {
                   style={{
                     position: 'absolute',
                     right: 15,
-                    top: 48,
+                    top: 20,
                   }}
                 />
               )}

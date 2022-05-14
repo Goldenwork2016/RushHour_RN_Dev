@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {constants} from '../../core/constants';
 
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
@@ -20,7 +21,7 @@ export const authenticate = token => {
 export const signup = (email, password, firstname, lastname, fleetId) => {
   return async dispatch => {
     const response = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Drivers/Register',
+    constants.apiBaseUrl +  'Drivers/Register',
       {
         method: 'POST',
         headers: {
@@ -65,13 +66,13 @@ export const signup2 = (
   return async dispatch => {
     const token = await AsyncStorage.getItem('token');
     const formData = new FormData();
-    formData.append('file', {
+    formData.append('image', {
       type: 'image/jpg',
       uri: driverImage,
       name: driverImage.split('/').pop(),
     });
     const imageUploadRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl +  'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -83,9 +84,10 @@ export const signup2 = (
       },
     );
     const driverImageUrl = await imageUploadRes.json();
-    // console.log(driverImageUrl.data);
+    console.log('hobby');
+    console.log(driverImageUrl.data);
     const response = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Drivers',
+      constants.apiBaseUrl + 'Drivers',
       {
         method: 'PUT',
         headers: {
@@ -144,7 +146,7 @@ export const signup3 = (
       name: licenseImage.split('/').pop(),
     });
     const licenseImageRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl + 'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -165,7 +167,7 @@ export const signup3 = (
       name: insuranceCardImage.split('/').pop(),
     });
     const insuranceRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl + 'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -185,7 +187,7 @@ export const signup3 = (
       name: registrationCardImage.split('/').pop(),
     });
     const registrationRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl + 'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -205,7 +207,7 @@ export const signup3 = (
     const language = await AsyncStorage.getItem('language');
     const addressLine1 = await AsyncStorage.getItem('addressLine1');
     const response = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Drivers',
+      constants.apiBaseUrl + 'Drivers',
       {
         method: 'PUT',
         headers: {
@@ -266,7 +268,7 @@ export const regDVIR = (
       name: frontTruckImage.split('/').pop(),
     });
     const frontRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -286,7 +288,7 @@ export const regDVIR = (
       name: backTruckImage.split('/').pop(),
     });
     const backRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl + 'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -306,7 +308,7 @@ export const regDVIR = (
       name: inspectionSignatureImage.split('/').pop(),
     });
     const inspectionSignatureRes = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Images/upload',
+      constants.apiBaseUrl + 'Images/upload',
       {
         method: 'POST',
         headers: {
@@ -320,7 +322,7 @@ export const regDVIR = (
     const inspectionSignatureURL = await inspectionSignatureRes.json();
 
     const response = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Drivers/StatusCheck',
+      constants.apiBaseUrl + 'Drivers/StatusCheck',
       {
         method: 'POST',
         headers: {
@@ -358,7 +360,7 @@ export const regDVIR = (
 export const login = (fleetId, email, password) => {
   return async dispatch => {
     const response = await fetch(
-      'https://beta.rushhourapp.com/api/v1/Auth/Login',
+      constants.apiBaseUrl + 'Auth/Login',
       {
         method: 'POST',
         headers: {

@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 
 import {
@@ -15,7 +16,6 @@ import {
 import React, {useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ButtonSubmit from '../components/button';
 import {Divider} from 'react-native-elements';
 import Geolocation from 'react-native-geolocation-service';
 import {constants} from './../../../core/constants';
@@ -23,7 +23,7 @@ import {constants} from './../../../core/constants';
 const getWidth = Dimensions.get('window').width;
 // const getHeight = Dimensions.get('window').height;
 
-const RouteList = ({navigation}) => {
+const DriverRouteList = ({navigation}) => {
   const [routes, setRoutes] = useState([]);
   const [duration, setDuration] = useState();
   const [legs, setLegs] = useState([]);
@@ -54,7 +54,8 @@ const RouteList = ({navigation}) => {
         const stopItems = stops.flatMap(e => e.routeItemStops);
         setRoutes(stopItems);
         setRoutePlaceId(
-          response.data.list[0].directions.geocoded_waypoints[0].place_id,
+          // response.data.list[0].directions.geocoded_waypoints[0].place_id,
+          stopItems[0].address.fullAddress,
         );
       })
       .catch(error => {
@@ -106,14 +107,23 @@ const RouteList = ({navigation}) => {
           .then(response => response.json())
           .then(response => {
             setMyPlaceId(response.results[0].place_id);
-
+            // 40.72218,-73.849304,
+            // https://maps.googleapis.com/maps/api/directions/json?destination=Millennium%20Ct,%20Columbus,%20OH%2043219,%20USA&origin=38.8758736,-117.7098362&key=AIzaSyD_ZJPQLldJW_XGdGiadvdzlrUq6-v85FI
             const url2 =
-              'https://maps.googleapis.com/maps/api/directions/json?destination=place_id%' +
+              'https://maps.googleapis.com/maps/api/directions/json?destination=' +
               routePlaceId +
-              '&origin=place_id%' +
-              myPlaceId +
+              '&origin=40.72218,-73.849304' +
+              // myPlaceId +
               '&key=' +
               constants.googleApiKey;
+              // const url2 =
+              // 'https://maps.googleapis.com/maps/api/directions/json?destination=place_id%' +
+              // routePlaceId +
+              // '&origin=place_id%' +
+              // // myPlaceId +
+              // 'ChIJQW01FyRewokRiDQuLX2jvv0&key=' +
+              // constants.googleApiKey;
+              console.log(url2);
             fetch(url2, {
               method: 'GET',
               body: JSON.stringify(),
@@ -124,6 +134,7 @@ const RouteList = ({navigation}) => {
                   setDuration('N/A');
                   // console.log('empty');
                 } else {
+                  // setDuration(res.routes[0].legs[0].duration.text);
                   if (res.routes[0].legs[0].duration.text === '1 min') {
                     setDuration('N/A');
                   } else {
@@ -175,7 +186,7 @@ const RouteList = ({navigation}) => {
       <View style={styles.hContainer}>
         <TouchableOpacity
           style={styles.hButton}
-          onPress={() => navigation.navigate('TruckRoute')}>
+          onPress={() => navigation.navigate('DriverMapView')}>
           <Text style={(styles.text, {color: '#4CB75C'})}>Map</Text>
         </TouchableOpacity>
         <View style={styles.hBtn}>
@@ -203,12 +214,17 @@ const RouteList = ({navigation}) => {
           <View style={{padding: 20}}>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TouchableOpacity onPress={() =>
+            navigation.navigate('InitArrived', {orderStop: item})
+          }>
               <Text style={styles.textBold}>{item.customer.customerName}</Text>
+              </TouchableOpacity>
               {/* <Text style={styles.text}>{item.duration} min</Text> */}
               {index === 0 ? (
                 <Text style={styles.text}>{duration} </Text>
               ) : (
-                <Text style={styles.text}>{legs[0].duration.text} </Text>
+                // <Text style={styles.text}>{index + 1} </Text>
+                <Text style={styles.text}>{legs[index - 1].duration.text} </Text>
               )}
             </View>
             <Text style={(styles.text, {color: '#93929A'})}>
@@ -224,16 +240,10 @@ const RouteList = ({navigation}) => {
         )}
         keyExtractor={(item, index) => index}
       />
-      <ButtonSubmit
-        text="Start Route"
-        onPress={() => navigation.navigate('RegDone')}
-      />
     </View>
   );
 };
-
-export default RouteList;
-
+export default DriverRouteList;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',

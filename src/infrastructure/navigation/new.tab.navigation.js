@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import {Image, Platform, View} from 'react-native';
 
 import DashboardScreen from '../../features/dashboard/screens/dashboard.screen';
@@ -85,9 +87,9 @@ const createTabOptions = ({route}) => ({
 });
 
 // Tab bBottom Navigation
-const TabNavigator = () => {
+const NewTabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={createTabOptions}>
+    <Tab.Navigator screenOptions={createTabOptions} initialRouteName="Voice">
       <Tab.Screen
         name="Orders"
         component={OrderScreen}
@@ -120,7 +122,7 @@ const TabNavigator = () => {
         name="Voice"
         component={MapStackNav}
         options={({route}) => ({
-          headerShown: false,
+            headerShown: false,
           title: '',
           headerTitleStyle: {
             alignSelf: 'center',
@@ -166,4 +168,4 @@ const TabNavigator = () => {
   );
 };
 
-export default TabNavigator;
+export default NewTabNavigator;

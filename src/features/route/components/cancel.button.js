@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 
-import {Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import React from 'react';
 
 const getWidth = Dimensions.get('window').width;
-const ButtonSubmit = props => {
+const CancelButton = props => {
   return (
       <TouchableOpacity onPress={props.onPress} style={ { alignItems: 'center' } }>
-        <ImageBackground borderRadius= {15} source={require('../../../../assets/btn-bg.png')} style={styles.btnContainer}>
-           <Text style={styles.text}>{props.text}</Text>
-        </ImageBackground>
+        <View  style={styles.btnContainer}>
+           <Text style={styles.text1}>{props.text}</Text>
+        </View>
       </TouchableOpacity>
       // <OnTouch onPress={props.onPress}>
       //     <SubmitButton resizeMode="cover">
@@ -21,14 +21,14 @@ const ButtonSubmit = props => {
   );
 };
 
-export default ButtonSubmit;
+export default CancelButton;
 
 const styles = StyleSheet.create({
   btnContainer: {
     // marginRight: 15,
     // marginTop: 10,
+    backgroundColor: 'white',
     resizeMode:'cover',
-    backgroundColor: '#4CB75C',
     marginBottom: 15,
     alignContent: 'center',
     justifyContent: 'center',
@@ -45,5 +45,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
     color: 'white',
+  },text1: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'black',
   },
 });

@@ -16,6 +16,12 @@ target 'RushHour_RN_Dev' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'VisionCamera', :path => '../node_modules/react-native-vision-camera'
+
+  pod 'RNImageToPdf', :path => '../node_modules/react-native-image-to-pdf'
+
   target 'RushHour_RN_DevTests' do
     inherit! :complete
     # Pods for testing

@@ -1,15 +1,15 @@
+import {Button, Modal, Portal, Provider} from 'react-native-paper';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, FlatList, Text, TouchableOpacity} from 'react-native';
-import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {Modal, Portal, Button, Provider} from 'react-native-paper';
 
+import HeaderTab from '../components/tap.order.component';
+import Icon from 'react-native-vector-icons/Ionicons';
+import OrderCompleted from '../components/order.completed.component';
+import OrderList from '../components/orderlist.component';
 import {colors} from '../../../infrastructure/theme/colors';
 import {space} from '../../../infrastructure/theme/spacing';
-import OrderList from '../components/orderlist.component';
-import HeaderTab from '../components/tap.order.component';
-import OrderCompleted from '../components/order.completed.component';
+import styled from 'styled-components/native';
 
 const SafeView = styled.SafeAreaView`
   background-color: ${props => props.theme.colors.bg.primary};

@@ -9,8 +9,10 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Modal,
   PermissionsAndroid,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,25 +22,33 @@ import MapView, {Marker, PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import React, {useEffect} from 'react';
 
 import {ActivityIndicator} from 'react-native';
+import ArrivedModal from '../components/modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ButtonSubmit from '../components/button';
-import DVIRMap from '../components/map';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
+import {Provider} from 'react-native-paper';
+import RouteLoading from './../../../components/loading/routeLoading';
 import {constants} from './../../../core/constants';
+import {useRef} from 'react';
 import {useState} from 'react';
+
+// import GetLocation from 'react-native-get-location';
+
+// import DVIRMap from '../components/map';
 
 const getWidth = Dimensions.get('window').width;
 const getHeight = Dimensions.get('window').height;
-const TruckRoute = ({navigation}) => {
+const DriverMapView = ({navigation}) => {
   const [option, setOption] = useState('map');
   const [legs, setLegs] = useState([]);
   const [myLoc, setMyLoc] = useState({});
-  const [routePlaceId, setRoutePlaceId] = useState('');
-  const [routes, setRoutes] = useState([]);
   const [myLat, setMyLat] = useState();
   const [myLon, setMyLon] = useState();
-
+  const [routePlaceId, setRoutePlaceId] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [routes, setRoutes] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const intervalRef = useRef();
   const fetchRoutes = async () => {
     const token = await AsyncStorage.getItem('token');
     var apiUrl = constants.apiBaseUrl + 'Routes/Current';
@@ -69,6 +79,7 @@ const TruckRoute = ({navigation}) => {
         console.log('error');
       });
   };
+
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       getOneTimeLocation();
@@ -92,11 +103,7 @@ const TruckRoute = ({navigation}) => {
       }
     }
   };
-  //   requestLocationPermission();
-  //   return () => {
-  //     // Geolocation.clearWatch(watchID);
-  //   };
-  //   };
+
   const getOneTimeLocation = () => {
     Geolocation.getCurrentPosition(
       //Will give you the current location
@@ -119,38 +126,97 @@ const TruckRoute = ({navigation}) => {
   };
   useEffect(() => {
     requestLocationPermission();
-    // console.log(myLoc.latitude);
+    // intervalRef.current = setInterval(fetchRoutes, 5000);
+
+    // Clear the interval when this hook/component unmounts so it doesn't keep
+    // running when this component is gone.
+    // return () => {
+    //   clearInterval(intervalRef.current);
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return (
-    <View style={styles.container}>
-      <View>
-        {/* {' '} */}
-        <View style={styles.hContainer}>
-          <View style={styles.hBtn}>
-            <Text style={styles.text}>Map</Text>
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 3000);
+  const renderMap = () => {
+    // console.log(legs.length);
+    return legs.map((data, index) => {
+      return (
+        // {index === 0 ? }
+        <Marker
+          coordinate={{
+            latitude: data.end_location.lat,
+            longitude: data.end_location.lng,
+          }}
+          title={data.start_address}
+          description={data.start_address}
+          onPress={() =>
+            navigation.navigate('InitArrived', {orderStop: routes[index + 1]})
+          }>
+          <View style={styles.markerCon2}>
+            <Text style={{color: 'black'}}>{index + 2}</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('RouteList')}
-            style={styles.hButton}>
-            <Text style={(styles.text, {color: '#4CB75C'})}>List</Text>
-          </TouchableOpacity>
-        </View>
-        {/* <Notification><Text style={{color: 'white'}}>You have 10 Pickup Locations.</Text></Notification> */}
-        <ImageBackground
-          width={getWidth}
-          resizeMode="cover"
-          source={require('../../../../assets/gradient_bg.png')}
-          style={{
-            width: getWidth,
-            resizeMode: 'cover',
-            padding: 10,
-            backgroundColor: '#4CB75C',
-          }}>
-          <Text style={{color: 'white'}}>You have {routes.length} Pickup Locations.</Text>
-        </ImageBackground>
-      </View>
-      {legs.length === 0 ? (
+        </Marker>
+        // </View>
+      );
+    });
+  };
+  const renderDirection = () => {
+    return legs.map((data, index) => {
+      return (
+        <MapViewDirections
+          // strokeColor="red"
+          strokeColor="#3BC2DE"
+          strokeWidth={5}
+          origin={{
+            latitude: data.start_location.lat,
+            longitude: data.start_location.lng,
+          }}
+          // origin={{latitude: myLoc.latitude, longitude: myLoc.longitude}}
+          destination={{
+            latitude: data.end_location.lat,
+            longitude: data.end_location.lng,
+          }}
+          apikey={constants.googleApiKey}
+        />
+      );
+    });
+  };
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      {isLoading ? (
+        <RouteLoading />
+      ) : (
+        <View style={styles.container}>
+          <View>
+            {/* {' '} */}
+            <View style={styles.hContainer}>
+              <View style={styles.hBtn}>
+                <Text style={styles.text}>Map</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('DriverRouteList')}
+                style={styles.hButton}>
+                <Text style={(styles.text, {color: '#4CB75C'})}>List</Text>
+              </TouchableOpacity>
+            </View>
+            {/* <Notification><Text style={{color: 'white'}}>You have 10 Pickup Locations.</Text></Notification> */}
+            <ImageBackground
+              width={getWidth}
+              resizeMode="cover"
+              source={require('../../../../assets/gradient_bg.png')}
+              style={{
+                width: getWidth,
+                resizeMode: 'cover',
+                padding: 10,
+                backgroundColor: '#4CB75C',
+              }}>
+              <Text style={{color: 'white'}}>
+                You have {routes.length} Pickup Locations.
+              </Text>
+            </ImageBackground>
+          </View>
+          {legs.length === 0 ? (
             <View style={{height: getHeight * 0.8, justifyContent: 'center'}}>
               <ActivityIndicator size="large" color="#4CB75C" />
             </View>
@@ -159,21 +225,22 @@ const TruckRoute = ({navigation}) => {
               provider={PROVIDER_GOOGLE} // remove if not using Google Maps
               style={styles.map}
               showsUserLocation={true}
+              ref={intervalRef}
               //   customMapStyle={ mapStandardStyle}
               region={{
                 // latitude: parseFloat(myLat),
                 // longitude: parseFloat(myLon),
                 latitude: 40.72218,
                 longitude: -73.849304,
-                latitudeDelta: 0.5,
-                longitudeDelta: 0.5,
+                latitudeDelta: 0.9,
+                longitudeDelta: 0.9,
               }}>
               <Marker
                 coordinate={{
-                  // latitude: parseFloat(myLat),
-                  // longitude: parseFloat(myLon),
                   latitude: 40.72218,
                   longitude: -73.849304,
+                  // latitude: parseFloat(myLat),
+                  // longitude: parseFloat(myLon),
                 }}
                 title="Test Title"
                 description="This is the test description">
@@ -184,18 +251,27 @@ const TruckRoute = ({navigation}) => {
                   />
                 </View>
               </Marker>
+              {renderMap()}
               <Marker
                 coordinate={{
                   latitude: legs[0].start_location.lat,
                   longitude: legs[0].start_location.lng,
                 }}
                 title={legs[0].start_address}
-                description={legs[0].start_address}>
-                <View style={styles.markerCon2}>
-                  <Text style={{color: 'black'}}>1</Text>
-                </View>
+                description={legs[0].start_address}
+                onPress={() =>
+                  navigation.navigate('InitArrived', {orderStop: routes[0]})
+                }>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('InitArrived', {orderStop: routes[0]})
+                  }>
+                  <View style={styles.markerCon2}>
+                    <Text style={{color: 'black'}}>1</Text>
+                  </View>
+                </TouchableOpacity>
               </Marker>
-              <Marker
+              {/* <Marker
                 coordinate={{
                   latitude: legs[0].end_location.lat,
                   longitude: legs[0].end_location.lng,
@@ -205,8 +281,8 @@ const TruckRoute = ({navigation}) => {
                 <View style={styles.markerCon2}>
                   <Text style={{color: 'black'}}>2</Text>
                 </View>
-              </Marker>
-              <MapViewDirections
+              </Marker> */}
+              {/* <MapViewDirections
                 // strokeColor="red"
                 strokeColor="#3BC2DE"
                 strokeWidth={5}
@@ -220,7 +296,8 @@ const TruckRoute = ({navigation}) => {
                   longitude: legs[0].end_location.lng,
                 }}
                 apikey={constants.googleApiKey}
-              />
+              /> */}
+              {renderDirection()}
               <MapViewDirections
                 // strokeColor="red"
                 strokeColor="#3BC2DE"
@@ -249,15 +326,16 @@ const TruckRoute = ({navigation}) => {
             </MapView>
             // <View/>
           )}
-      <View
-        style={{padding: 10, alignItems: 'center', justifyContent: 'center'}}>
-        <ButtonSubmit text="Start Route" onPress={() => navigation.navigate('RegDone')} />
-      </View>
-    </View>
+          {/* <TouchableOpacity onPress={() => navigation.navigate('InitArrived')}>
+            <Text>Arrived</Text>
+          </TouchableOpacity> */}
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 
-export default TruckRoute;
+export default DriverMapView;
 
 const styles = StyleSheet.create({
   container: {
@@ -315,7 +393,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   hBtn: {alignItems: 'center', flex: 1, padding: 15, borderRadius: 15},
-  map: {height: getHeight * 0.7, width: '100%'},
+  map: {height: getHeight * 0.8, width: '100%'},
   markerImage: {width: 50, height: 50, opacity: 1},
   markerCon: {
     width: 100,

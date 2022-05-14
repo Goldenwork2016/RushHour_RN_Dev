@@ -25,3 +25,27 @@
 
   // const uri = pickerResponse?.assets && pickerResponse.assets[0].uri;
   //   console.log(uri);
+
+  const formData = new FormData();
+    formData.append('image', {
+      type: 'image/jpg',
+      uri: driverImage,
+      name: driverImage.split('/').pop(),
+    });
+    const imageUploadRes = await fetch(
+      'https://hobbyist-api.herokuapp.com/api/v1/item-image',
+      // constants.apiBaseUrl +  'Images/upload',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'text/plain',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjcyYzY3NjdjNWEwNTA1ZmFlNzY1YjAiLCJpYXQiOjE2NTI0NzY3MzEsImV4cCI6MTY1MjU2MzEzMX0.hKcTHm7hN8VcPDJMgIEE8G0Eay0mFgYa8vMDkrR1f7I',
+          // Authorization: 'Bearer ' + token,
+        },
+        body: formData,
+      },
+    );
+    const driverImageUrl = await imageUploadRes.json();
+    console.log('hobby');
+    console.log(driverImageUrl.data);

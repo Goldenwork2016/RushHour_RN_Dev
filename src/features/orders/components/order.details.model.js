@@ -1,9 +1,10 @@
+import {Modal, Portal} from 'react-native-paper';
+import {ScrollView, TouchableOpacity} from 'react-native';
+
+import Icon from 'react-native-vector-icons/Ionicons';
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {TouchableOpacity, ScrollView} from 'react-native';
 import styled from 'styled-components/native';
-import {Modal, Portal} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 const ModalContainer = styled.View`
   padding: ${props => props.theme.space[3]};
