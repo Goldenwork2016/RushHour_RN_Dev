@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
 
+import * as login from '../../../store/actions/auth';
+
+import {ActivityIndicator, Alert, Image} from 'react-native';
 import {
   AuthContainer,
   ButtonText,
@@ -8,15 +12,21 @@ import {
   SubmitButton,
 } from '../components/accounts.styles';
 import {LockIcon, Lockbackground} from '../components/loginbackground.styles';
-import React, {useState, useContext} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Image} from 'react-native';
 import ImputForm from '../../../components/form-control/InputFormComponent';
 import {colors} from '../../../infrastructure/theme/colors';
 import styled from 'styled-components/native';
+import {useDispatch} from 'react-redux';
 
-import {AuthContext} from '../../../services/auth/auth.context';
+// import {AuthContext} from '../../../services/auth/auth.context';
+
+
+
+
+
+
 //import {Ionicons} from '@expo/vector-icons';
 
 const LoginContiner = styled.View`
@@ -25,7 +35,30 @@ const LoginContiner = styled.View`
   flex: 1;
   text-align: left;
 `;
-
+const Input = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
+    width: 350px;
+    height: ${props => props.theme.sizes[5]};
+    margin-bottom: ${props => props.theme.space[1]};
+    padding-left: ${props => props.theme.space[3]};
+    padding-right: ${props => props.theme.space[3]};
+    padding-top: ${props => props.theme.space[2]}
+    padding-bottom: ${props => props.theme.space[2]}
+    font-size: ${props => props.theme.sizes[1]};
+    background-color: #f4f6fb;
+    border-radius: 12px;
+    font-size: ${props => props.theme.fontSizes.text};
+     color: ${props => props.theme.colors.text.dark};
+`;
+const InputLabel = styled.Text`
+  text-align: left;
+  margin-left: ${props => props.theme.space[3]};
+  margin-bottom: ${props => props.theme.space[2]};
+  padding-top: ${props => props.theme.space[2]};
+  font-size: ${props => props.theme.fontSizes.text};
+  color: ${props => props.theme.colors.text.dark};
+`;
 const LogoContainer = styled.View`
   margin-bottom: ${props => props.theme.space[4]};
   align-items: center;
@@ -68,15 +101,93 @@ const SignUpText = styled.Text`
   color: ${props => props.theme.colors.brand.primary};
   margin-top: -5px;
 `;
+const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
+const formReducer = (state, action) => {
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    let updatedFormIsValid = true;
+    for (const key in updatedValidities) {
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValidities: updatedValidities,
+      inputValues: updatedValues,
+    };
+  }
+  return state;
+};
 const Login = ({navigation}) => {
-  const [fleetId, setFleetId] = useState('');
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(false);
+  const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const {signIn} = useContext(AuthContext);
+  // const {signIn} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const dispatch = useDispatch();
 
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      fleetId: '',
+      username: '',
+      password: '',
+    },
+    inputValidities: {
+      fleetId: false,
+      username: false,
+      password: false,
+    },
+    formIsValid: false,
+  });
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An Error Occurred!', error, [{text: 'Okay'}]);
+    }
+  }, [error]);
+
+  const loginHandler = async () => {
+    let action;
+    action = login.login(
+      formState.inputValues.fleetId,
+      formState.inputValues.email,
+      password,
+    );
+    // console.log(formState.inputValues.password);
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      console.log('success');
+      // signIn;
+      navigation.navigate('Dashboard');
+      // navigation.navigate('RouteList');
+      setIsLoading(false);
+    } catch (err) {
+      setError('Invalid fleetId/email/password');
+      setIsLoading(false);
+    }
+  };
+
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState],
+  );
   return (
     <Lockbackground resizeMode="cover">
       <LockIcon>
@@ -95,31 +206,54 @@ const Login = ({navigation}) => {
           <AuthContainer>
             <ImputForm
               autoCapitalize="none"
+              id="fleetId"
               label="Fleet ID"
               name="fleetId"
               placeholder="Fleet ID"
-              value={fleetId}
-              onChangeText={text => setFleetId(text)}
+              autoComplete="off"
+              // value={fleetId}
+              errorText="Please enter a your fleetId!"
+              keyboardType="default"
+              onInputChange={inputChangeHandler}
+              required
             />
 
             <ImputForm
               autoCapitalize="none"
-              label="User Name"
-              name="unername"
-              placeholder="User Name"
-              value={user}
-              onChangeText={text => setUser(text)}
+              autoComplete="off"
+              id="email"
+              label="Email Address"
+              name="email"
+              placeholder="Email Address"
+              errorText="Please enter your a valid email!"
+              required
+              onInputChange={inputChangeHandler}
             />
+            <InputLabel>Password</InputLabel>
+        
             <Group>
-              <ImputForm
+            <Input
+          autoCapitalize="none"
+          autoComplete="off"
+          required
+          value={password}
+          onChangeText={text => setPassword(text)}
+          placeholder="Password"
+          secureTextEntry={secureTextEntry}
+                
+        />
+              {/* <ImputForm
                 autoCapitalize="none"
+                id="password"
                 label="Password"
-                name="password"
+                autoComplete="off"
                 placeholder="Password"
                 secureTextEntry={secureTextEntry}
+                required
                 value={password}
                 onChangeText={text => setPassword(text)}
-              />
+                // onInputChange={inputChangeHandler}
+              /> */}
               {secureTextEntry ? (
                 <Icon
                   onPress={() => setSecureTextEntry(false)}
@@ -129,7 +263,7 @@ const Login = ({navigation}) => {
                   style={{
                     position: 'absolute',
                     right: 15,
-                    top: 48,
+                    top: 20,
                   }}
                 />
               ) : (
@@ -141,7 +275,7 @@ const Login = ({navigation}) => {
                   style={{
                     position: 'absolute',
                     right: 15,
-                    top: 48,
+                    top: 20,
                   }}
                 />
               )}
@@ -174,11 +308,15 @@ const Login = ({navigation}) => {
 
               <CheckboxLabel>I agree to the terms and conditions</CheckboxLabel>
             </CheckboxContainer>
-            <OnTouch onPress={signIn}>
-              <SubmitButton resizeMode="cover">
-                <ButtonText>Sign In</ButtonText>
-              </SubmitButton>
-            </OnTouch>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#4CB75C" />
+            ) : (
+              <OnTouch onPress={loginHandler}>
+                <SubmitButton resizeMode="cover">
+                  <ButtonText>Sign In</ButtonText>
+                </SubmitButton>
+              </OnTouch>
+            )}
             <NewUserContainer>
               <CheckboxLabel>New User? </CheckboxLabel>
               <OnTouch>

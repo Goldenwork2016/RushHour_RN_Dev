@@ -1,5 +1,6 @@
-import {Dimensions} from 'react-native';
 import * as Animatable from 'react-native-animatable';
+
+import {Dimensions} from 'react-native';
 import styled from 'styled-components/native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;

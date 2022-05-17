@@ -9,7 +9,7 @@ const getWidth = Dimensions.get('window').width;
 const ButtonSubmit = props => {
   return (
       <TouchableOpacity onPress={props.onPress} style={ { alignItems: 'center' } }>
-        <ImageBackground borderRadius= {15} source={require('../../../../assets/button-bg.png')} style={styles.btnContainer}>
+        <ImageBackground borderRadius= {15} source={require('../../../../assets/btn-bg.png')} style={styles.btnContainer}>
            <Text style={styles.text}>{props.text}</Text>
         </ImageBackground>
       </TouchableOpacity>
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     // marginRight: 15,
     // marginTop: 10,
     resizeMode:'cover',
+    backgroundColor: '#4CB75C',
     marginBottom: 15,
     alignContent: 'center',
     justifyContent: 'center',

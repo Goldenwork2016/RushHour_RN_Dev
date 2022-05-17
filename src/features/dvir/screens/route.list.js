@@ -5,65 +5,170 @@ import {
   Dimensions,
   FlatList,
   ImageBackground,
+  PermissionsAndroid,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import React, {useEffect, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ButtonSubmit from '../components/button';
 import {Divider} from 'react-native-elements';
-import React from 'react';
+import Geolocation from 'react-native-geolocation-service';
+import {constants} from './../../../core/constants';
 
 const getWidth = Dimensions.get('window').width;
-const getHeight = Dimensions.get('window').height;
+// const getHeight = Dimensions.get('window').height;
 
-const DATA = [
-  {
-    id: '1',
-  },
-  {
-    id: '2',
-  },
-  {
-    id: '3',
-  },
-  {
-    id: '4',
-  },
-  {
-    id: '5',
-  },
-  {
-    id: '7',
-  },
-  {
-    id: '8',
-  },
-  {
-    id: '9',
-  },
-];
-const renderList = () => (
-  <View style={{padding: 20}}>
-    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-      <Text style={styles.textBold}>Belle Umo</Text>
-      <Text style={styles.text}>37 min</Text>
-    </View>
-    <Text style={(styles.text, {color: '#93929A'})}>7958 Swift Village</Text>
-    <Text style={(styles.text, {color: '#93929A'})}>Order 15769839</Text>
-    <View style={styles.spacer} />
-    <Divider />
-  </View>
-);
-const List = () => (
-  <FlatList
-    data={DATA}
-    renderItem={renderList}
-    keyExtractor={item => item.id}
-  />
-);
 const RouteList = ({navigation}) => {
+  const [routes, setRoutes] = useState([]);
+  const [duration, setDuration] = useState();
+  const [legs, setLegs] = useState([]);
+  const [myPlaceId, setMyPlaceId] = useState('');
+  const [routePlaceId, setRoutePlaceId] = useState('');
+
+  const fetchRoutes = async () => {
+    const token = await AsyncStorage.getItem('token');
+    var apiUrl = constants.apiBaseUrl + 'Routes/Current';
+
+    var headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    };
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: headers,
+      body: JSON.stringify(),
+    })
+      .then(response => response.json())
+      .then(response => {
+        const list = response.data.list;
+        const stops = list.flatMap(r => r.routeStopGroups);
+        const lg = list.flatMap(r => r.directions.routes[0].legs);
+        setLegs(lg);
+        // console.log(lg);
+        const stopItems = stops.flatMap(e => e.routeItemStops);
+        setRoutes(stopItems);
+        setRoutePlaceId(
+          response.data.list[0].directions.geocoded_waypoints[0].place_id,
+        );
+      })
+      .catch(error => {
+        console.log('error');
+      });
+  };
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      getOneTimeLocation();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          //To Check, If Permission is granted
+          getOneTimeLocation();
+        } else {
+          console.log('Permission Denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
+
+  const getOneTimeLocation = () => {
+    Geolocation.getCurrentPosition(
+      //Will give you the current location
+      position => {
+        const currentLongitude = JSON.stringify(position.coords.longitude);
+        const currentLatitude = JSON.stringify(position.coords.latitude);
+        const url =
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+          currentLongitude +
+          ',' +
+          currentLatitude +
+          '&key=' +
+          constants.googleApiKey;
+        // console.log(url);
+        fetch(url, {
+          method: 'GET',
+          body: JSON.stringify(),
+        })
+          .then(response => response.json())
+          .then(response => {
+            setMyPlaceId(response.results[0].place_id);
+
+            const url2 =
+              'https://maps.googleapis.com/maps/api/directions/json?destination=place_id%' +
+              routePlaceId +
+              '&origin=place_id%' +
+              myPlaceId +
+              '&key=' +
+              constants.googleApiKey;
+            fetch(url2, {
+              method: 'GET',
+              body: JSON.stringify(),
+            })
+              .then(res => res.json())
+              .then(res => {
+                if (res.routes.length === 0) {
+                  setDuration('N/A');
+                  // console.log('empty');
+                } else {
+                  if (res.routes[0].legs[0].duration.text === '1 min') {
+                    setDuration('N/A');
+                  } else {
+                    setDuration(res.routes[0].legs[0].duration.text);
+                  }
+
+                  // console.log(res.routes[0].legs[0].duration.text);
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+            fetchRoutes();
+            // console.log(response.results[0].place_id);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+      error => {
+        console.log('error ' + error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 30000,
+        maximumAge: 1000,
+      },
+    );
+  };
+  useEffect(() => {
+    requestLocationPermission();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // const renderList = () => (
+  //   <View style={{padding: 20}}>
+  //     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+  //       <Text style={styles.textBold}>Belle Umo</Text>
+  //       <Text style={styles.text}>37 min</Text>
+  //     </View>
+  //     <Text style={(styles.text, {color: '#93929A'})}>7958 Swift Village</Text>
+  //     <Text style={(styles.text, {color: '#93929A'})}>Order 15769839</Text>
+  //     <View style={styles.spacer} />
+  //     <Divider />
+  //   </View>
+  // );
   return (
     <View style={styles.container}>
       {/* {' '} */}
@@ -87,15 +192,42 @@ const RouteList = ({navigation}) => {
           padding: 10,
           backgroundColor: '#4CB75C',
         }}>
-        <Text style={{color: 'white'}}>You have 10 Pickup Locations.</Text>
+        <Text style={{color: 'white'}}>
+          You have {routes.length} Pickup Locations.
+        </Text>
       </ImageBackground>
       <FlatList
-        data={DATA}
+        data={routes}
         style={{width: '100%'}}
-        renderItem={renderList}
-        keyExtractor={item => item.id}
+        renderItem={({item, index}) => (
+          <View style={{padding: 20}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={styles.textBold}>{item.customer.customerName}</Text>
+              {/* <Text style={styles.text}>{item.duration} min</Text> */}
+              {index === 0 ? (
+                <Text style={styles.text}>{duration} </Text>
+              ) : (
+                <Text style={styles.text}>{legs[0].duration.text} </Text>
+              )}
+            </View>
+            <Text style={(styles.text, {color: '#93929A'})}>
+              {' '}
+              {item.address.fullAddress}
+            </Text>
+            <Text style={(styles.text, {color: '#93929A'})}>
+              Order #{item.orderId}
+            </Text>
+            <View style={styles.spacer} />
+            <Divider />
+          </View>
+        )}
+        keyExtractor={(item, index) => index}
       />
-      <ButtonSubmit text="View Route"/>
+      <ButtonSubmit
+        text="Start Route"
+        onPress={() => navigation.navigate('RegDone')}
+      />
     </View>
   );
 };

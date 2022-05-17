@@ -1,17 +1,30 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 
-import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
-import React, {useRef, useState} from 'react';
+import * as RNFS from 'react-native-fs';
+import * as regDVIR from './../../../store/actions/auth';
+
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 
 import AcceptableDamaged from '../components/choose';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../components/botChatBubble';
 import BotChatBubbleNoAvatar from '../components/bot.bubble.without.avatar';
 import ButtonSubmit from '../components/button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
-import InputForm from '../../../components/form-control/InputFormComponent';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import Signature from 'react-native-signature-canvas';
+import {useDispatch} from 'react-redux';
 
 const getWidth = Dimensions.get('window').width;
 const DVIRChatBot = ({navigation}) => {
@@ -19,13 +32,15 @@ const DVIRChatBot = ({navigation}) => {
   const [steps, setStep] = useState(1);
   const [backSide, setBackSide] = useState(null);
   const [frontSide, setFrontSide] = useState(null);
-  const [headlights, setHeadlights] = useState('');
-  const [turnSignal, setTurnSignal] = useState('');
-  const [breakLight, setBreakLight] = useState('');
-  const [fluidLeak, setFluidLeak] = useState('');
-  const [hornSound, setHornSound] = useState('');
-  const [sign, setSign] = useState('');
-  const [signError, setSignError] = useState(false);
+  const [headlights, setHeadlights] = useState(false);
+  const [turnSignal, setTurnSignal] = useState(false);
+  const [breakLight, setBreakLight] = useState(false);
+  const [fluidLeak, setFluidLeak] = useState(false);
+  const [hornSound, setHornSound] = useState(false);
+  const [sign, setSign] = useState(null);
+  const [plateNumber, setPlateNumber] = useState('');
+  const [fName, setFName] = useState('');
+  const [isSign, setIsSign] = useState(false);
 
   const takePhotoFromCameraFront = () => {
     ImagePicker.openCamera({
@@ -53,8 +68,95 @@ const DVIRChatBot = ({navigation}) => {
       setStep(3);
     });
   };
+  // const [signature, setSign] = useState(null);
 
-  return (
+  const handleOK = async signData => {
+    const path = RNFS.DownloadDirectoryPath + '/sign.png';
+   await RNFS.writeFile(
+      path,
+      signData.replace('data:image/png;base64,', ''),
+      'base64',
+    ).then(async image => {
+      setSign('file:///storage/emulated/0/Download/sign.png');
+      let action;
+      action = regDVIR.regDVIR(
+        plateNumber,
+        frontSide,
+        backSide,
+        headlights,
+        turnSignal,
+        breakLight,
+        fluidLeak,
+        hornSound,
+        'file:///storage/emulated/0/Download/sign.png',
+      );
+
+      setError(null);
+      setIsLoading(true);
+      try {
+        await dispatch(action);
+        console.log('success');
+        setStep(9);
+        // navigation.navigate('InitDVIR');
+        setIsLoading(false);
+        setIsSign(false);
+      } catch (err) {
+        setError(err.message);
+        setStep(8);
+        setIsLoading(false);
+        setIsSign(false);
+      }
+    });
+  };
+
+  const handleEmpty = () => {
+    console.log('Empty');
+  };
+
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    _firstName();
+    if (error) {
+      Alert.alert('An Error Occurred!', error, [{text: 'Okay'}]);
+    }
+  }, [error]);
+  const _firstName = async () => {
+    try {
+      const plateN = await AsyncStorage.getItem('plateNumber');
+      const firName = await AsyncStorage.getItem('firstName');
+      if (plateN !== null) {
+        setPlateNumber(plateN);
+        setFName(firName);
+      }
+    } catch (e) {
+      // Error retrieving data'
+      console.log('error occur');
+    }
+  };
+  const style = `.m-signature-pad--footer
+    .button {
+      background-color: #4CB75C;
+      color: #FFF;
+    }`;
+  return isSign ? (
+    <View style={{flex: 1}}>
+      <View style={styles.spacer}/>
+      {isLoading ? (
+              <ActivityIndicator size="small" color="#4CB75C" />
+            ) : (
+      <Signature
+        style={{justifyContent: 'flex-end'}}
+        onOK={handleOK}
+        onEmpty={handleEmpty}
+        descriptionText="Inspection Signature Image"
+        clearText="Clear"
+        confirmText="Confirm"
+        webStyle={style}
+      />)}
+    </View>
+  ) : (
     <View style={styles.container}>
       <ScrollView
         contentContainerStyle={{padding: 20}}
@@ -103,7 +205,7 @@ const DVIRChatBot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
               <View style={styles.checked}>
-                {headlights === 'acceptable' ? (
+                {headlights ? (
                   <Icon name="checkmark" size={20} color="white" />
                 ) : (
                   <Icon name="close" size={20} color="white" />
@@ -118,7 +220,7 @@ const DVIRChatBot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
               <View style={styles.checked}>
-                {turnSignal === 'acceptable' ? (
+                {turnSignal ? (
                   <Icon name="checkmark" size={20} color="white" />
                 ) : (
                   <Icon name="close" size={20} color="white" />
@@ -133,7 +235,7 @@ const DVIRChatBot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
               <View style={styles.checked}>
-                {breakLight === 'acceptable' ? (
+                {breakLight ? (
                   <Icon name="checkmark" size={20} color="white" />
                 ) : (
                   <Icon name="close" size={20} color="white" />
@@ -148,7 +250,7 @@ const DVIRChatBot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
               <View style={styles.checked}>
-                {fluidLeak === 'acceptable' ? (
+                {fluidLeak ? (
                   <Icon name="checkmark" size={20} color="white" />
                 ) : (
                   <Icon name="close" size={20} color="white" />
@@ -163,7 +265,7 @@ const DVIRChatBot = ({navigation}) => {
           <View>
             <View style={styles.floatRight}>
               <View style={styles.checked}>
-                {hornSound === 'acceptable' ? (
+                {hornSound ? (
                   <Icon name="checkmark" size={20} color="white" />
                 ) : (
                   <Icon name="close" size={20} color="white" />
@@ -172,13 +274,23 @@ const DVIRChatBot = ({navigation}) => {
             </View>
             <View style={styles.spacer} />
             <BotChatBubble text="Please sign that you have personally inspected the vehicle and found it to be in he condition listed above. " />
-            {signError && (
+            {/* {signError && (
               <BotChatBubbleNoAvatar text="Sign required, please sign" />
-            )}
+            )} */}
           </View>
         )}
         {steps > 8 && (
           <View style={{justifyContent: 'space-between'}}>
+            <View style={styles.floatRight}>
+              <Image
+                source={{uri: sign}}
+                style={{
+                  width: 100,
+                  height: 100,
+                }}
+                resizeMode="cover"
+              />
+            </View>
             <View>
               <BotChatBubble text="Thanks for completing the DVIR!" />
               <BotChatBubbleNoAvatar text="Here is your route for the day" />
@@ -231,11 +343,11 @@ const DVIRChatBot = ({navigation}) => {
           placeholder="Comment"
           onChangeText={text => {}}
           onAcceptPress={() => {
-            setHeadlights('acceptable');
+            setHeadlights(true);
             setStep(4);
           }}
           onDamagedPress={() => {
-            setHeadlights('damaged');
+            setHeadlights(false);
             setStep(4);
           }}
         />
@@ -246,11 +358,11 @@ const DVIRChatBot = ({navigation}) => {
           placeholder="Comment"
           onChangeText={text => {}}
           onAcceptPress={() => {
-            setTurnSignal('acceptable');
+            setTurnSignal(true);
             setStep(5);
           }}
           onDamagedPress={() => {
-            setTurnSignal('damaged');
+            setTurnSignal(false);
             setStep(5);
           }}
         />
@@ -261,11 +373,11 @@ const DVIRChatBot = ({navigation}) => {
           placeholder="Comment"
           onChangeText={text => {}}
           onAcceptPress={() => {
-            setBreakLight('acceptable');
+            setBreakLight(true);
             setStep(6);
           }}
           onDamagedPress={() => {
-            setBreakLight('damaged');
+            setBreakLight(false);
             setStep(6);
           }}
         />
@@ -276,11 +388,11 @@ const DVIRChatBot = ({navigation}) => {
           placeholder="Comment"
           onChangeText={text => {}}
           onAcceptPress={() => {
-            setFluidLeak('acceptable');
+            setFluidLeak(true);
             setStep(7);
           }}
           onDamagedPress={() => {
-            setFluidLeak('damaged');
+            setFluidLeak(false);
             setStep(7);
           }}
         />
@@ -291,47 +403,36 @@ const DVIRChatBot = ({navigation}) => {
           placeholder="Comment"
           onChangeText={text => {}}
           onAcceptPress={() => {
-            setHornSound('acceptable');
+            setHornSound(true);
             setStep(8);
           }}
           onDamagedPress={() => {
-            setHornSound('damaged');
+            setHornSound(false);
             setStep(8);
           }}
         />
       )}
       {steps === 8 && (
         // <InputForm placeholder="" multiline numberof/>
+        // <View>
         <View style={styles.action}>
-          <InputForm
-            // style={{flex: 1}}
-            autoCapitalize="none"
-            name="sign"
-            placeholder=""
-            multiline
-            numberOfLines={4}
-            value={sign}
-            onChangeText={text => setSign(text)}
-            style={{
-              backgroundColor: 'white',
-              height: 100,
-              width: getWidth * 0.95,
-            }}
-          />
-          <Icon
-            name="send"
-            size={30}
-            onPress={() => {
-              if (sign.length < 1) {
-                setSignError(true);
-              } else {
-                // scrollToEnd()
-                setStep(9);
-              }
-            }}
-            color="#4CB75C"
-            style={{position: 'absolute', right: 20, top: 90}}
-          />
+          <TouchableOpacity
+            onPress={
+              () => setIsSign(true)
+              // navigation.navigate('Signature')
+            }>
+            <View style={styles.circleCon}>
+              <Icon name="create-outline" size={30} color="#4CB75C" />
+            </View>
+          </TouchableOpacity>
+          {/* <Signature
+        onOK={handleOK}
+        onEmpty={handleEmpty}
+        descriptionText="Sign"
+        clearText="Clear"
+        confirmText="Save"
+        webStyle={style}
+      /> */}
         </View>
       )}
     </View>
@@ -404,5 +505,26 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     // bottom: 0,
     // height: 100,
+  },
+  preview: {
+    width: 335,
+    height: 200,
+    backgroundColor: '#F8F8F8',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 15,
+  },
+  previewText: {
+    color: '#FFF',
+    fontSize: 14,
+    height: 40,
+    lineHeight: 40,
+    paddingLeft: 10,
+    paddingRight: 10,
+    backgroundColor: '#69B2FF',
+    width: 120,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });

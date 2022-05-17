@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components/native';
 import {StyleSheet} from 'react-native';
+import styled from 'styled-components/native';
 const HeaderTabContainer = styled.View`
   flex-direction: row;
   justify-content: center;

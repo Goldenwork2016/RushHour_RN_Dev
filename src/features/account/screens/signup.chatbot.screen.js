@@ -1,19 +1,26 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable no-catch-shadow */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
 // /* eslint-disable */
 
+import * as signup2  from './../../../store/actions/auth';
+
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   ImageBackground,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../components/chatbot/botChatBubble';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,10 +33,30 @@ import {Slider} from 'react-native-elements';
 import ToolContainer from '../components/chatbot/bottom.tool.container';
 import UserChatBubble from '../components/chatbot/userChatBubble';
 import {colors} from '../../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
+import {useDispatch} from 'react-redux';
 
 // import { TouchableOpacity} from 'react-native-gesture-handler';
 
+
+const Input = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
+    width: 350px;
+    height: ${props => props.theme.sizes[5]};
+    margin-bottom: ${props => props.theme.space[1]};
+    padding-left: ${props => props.theme.space[3]};
+    padding-right: ${props => props.theme.space[3]};
+    padding-top: ${props => props.theme.space[2]}
+    padding-bottom: ${props => props.theme.space[2]}
+    font-size: ${props => props.theme.sizes[1]};
+    background-color: #f4f6fb;
+    border-radius: 12px;
+    font-size: ${props => props.theme.fontSizes.text};
+     color: ${props => props.theme.colors.text.dark};
+`;
 const SignupChatbot = ({navigation}) => {
+  const dispatch = useDispatch();
   const [profilePic, setProfilePic] = useState(null);
   const [steps, setStep] = useState(1);
   const [language, setLanguage] = useState('English');
@@ -39,6 +66,10 @@ const SignupChatbot = ({navigation}) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(1);
+  const [fName, setFName] = useState();
+  const [lName, setLName] = useState();
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [addressError, setAddressError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
@@ -59,10 +90,14 @@ const SignupChatbot = ({navigation}) => {
     showMode('date');
   };
 
-  // useEffect(() => {
-  //   // fetchCat();
-  //   // fetchProduct();
-  // }, []);
+  useEffect(() => {
+    _firstName();
+    if (error) {
+      Alert.alert('An Error Occurred!', error, [{text: 'Okay'}]);
+    }
+    // fetchCat();
+    // fetchProduct();
+  },[error] );
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
@@ -91,6 +126,37 @@ const SignupChatbot = ({navigation}) => {
       setStep(2);
     });
   };
+  const _firstName = async () => {
+    try {
+      const firName = await AsyncStorage.getItem('firstName');
+      const lasName = await AsyncStorage.getItem('lastName');
+      if (firName !== null && lasName !== null) {
+        setFName(firName);
+        setLName(lasName);
+      }
+    } catch (e) {
+      // Error retrieving data'
+      console.log('error occur');
+    }
+  };
+  const first = 'Hey ' + fName + ', lets start by creating your personal drivers profile.';
+  const submit = async () => {
+    let action;
+    action = signup2.signup2(fName, lName, profilePic, phone, date,value,language,address );
+
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      console.log('success');
+      navigation.navigate('SignupTruckChatbot');
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
+
   return (
     // <ScrollView contentContainerStyle={styles.container}>
     <View style={styles.container}>
@@ -107,7 +173,7 @@ const SignupChatbot = ({navigation}) => {
           />
           <Text style={styles.textBold}>Dispatcher</Text>
         </View>
-        <BotChatBubble text="Hey John, lets start by creating your personal drivers profile." />
+        <BotChatBubble text={first} />
         <BotChatBubble text="Lets start by getting a picture of you" />
         <View style={styles.spacer} />
         {/* step 2 */}
@@ -232,7 +298,7 @@ const SignupChatbot = ({navigation}) => {
             height: 100,
           }}>
           <View>
-            <InputForm
+            <Input
               // style={{flex: 1}}
               autoCapitalize="none"
               name="address"
@@ -252,7 +318,7 @@ const SignupChatbot = ({navigation}) => {
                 }
               }}
               color="#4CB75C"
-              style={{position: 'absolute', right: 15, top: 40}}
+              style={{position: 'absolute', right: 15, top: 10}}
             />
           </View>
         </View>
@@ -328,7 +394,7 @@ const SignupChatbot = ({navigation}) => {
             height: 100,
           }}>
           <View>
-            <InputForm
+            <Input
               // style={{flex: 1}}
               autoCapitalize="none"
               name="phone"
@@ -345,11 +411,11 @@ const SignupChatbot = ({navigation}) => {
                   setPhoneError(true);
                 } else {
                   setStep(4);
-                  navigation.navigate('SignupTruckChatbot');
+                  submit();
                 }
               }}
               color="#4CB75C"
-              style={{position: 'absolute', right: 15, top: 40}}
+              style={{position: 'absolute', right: 15, top: 10}}
             />
           </View>
         </View>

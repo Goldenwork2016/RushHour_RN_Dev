@@ -1,6 +1,6 @@
+import OrderDetailModal from './order.details.model';
 import React from 'react';
 import styled from 'styled-components/native';
-import OrderDetailModal from './order.details.model';
 
 const OrderListContainer = styled.View`
   flex-direction: column;

@@ -3,24 +3,60 @@
 
 import React, {useRef} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
+import {useEffect, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../components/botChatBubble';
 import BotChatBubbleNoAvatar from '../components/bot.bubble.without.avatar';
 import DVIRLoading from '../../../components/loading/dvirLoading';
 import Icon from 'react-native-vector-icons/Ionicons';
-import InputForm from '../../../components/form-control/InputFormComponent';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useState} from 'react';
+import {colors} from '../../../infrastructure/theme/colors';
+import styled from 'styled-components/native';
 
+const Input = styled.TextInput.attrs({
+  placeholderTextColor: colors.text.disabled,
+})`
+    width: 350px;
+    height: ${props => props.theme.sizes[5]};
+    margin-bottom: ${props => props.theme.space[1]};
+    padding-left: ${props => props.theme.space[3]};
+    padding-right: ${props => props.theme.space[3]};
+    padding-top: ${props => props.theme.space[2]}
+    padding-bottom: ${props => props.theme.space[2]}
+    font-size: ${props => props.theme.sizes[1]};
+    background-color: #f4f6fb;
+    border-radius: 12px;
+    font-size: ${props => props.theme.fontSizes.text};
+     color: ${props => props.theme.colors.text.dark};
+`;
 const InitDVIR = ({navigation}) => {
   const scrollViewRef = useRef();
   const [licensePlate, setLicensePlate] = useState('');
   const [licenseError, setLicenseError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [fName, setFName] = useState();
 
   setTimeout(() => {
     setIsLoading(false);
   }, 3000);
+  useEffect(() => {
+    _firstName();
+  }, );
+  const _firstName = async () => {
+    try {
+      const firName = await AsyncStorage.getItem('firstName');
+      const lasName = await AsyncStorage.getItem('lastName');
+      if (firName !== null && lasName !== null) {
+        setFName(firName);
+      }
+    } catch (e) {
+      // Error retrieving data'
+      console.log('error occur');
+    }
+  };
+  const first = 'Hey, good morning ' + fName;
+
   return (
     <SafeAreaView style={{flex: 1}}>
       {isLoading ? (
@@ -35,7 +71,7 @@ const InitDVIR = ({navigation}) => {
             }>
             <View style={styles.spacer} />
             <View style={styles.spacer} />
-            <BotChatBubble text="Hey, good morning John!" />
+            <BotChatBubble text={first} />
             <BotChatBubbleNoAvatar text="Please enter the license plate of the truck you will be driving today" />
             {licenseError && (
               <BotChatBubbleNoAvatar text="License plate is required, please enter the license plate" />
@@ -51,7 +87,7 @@ const InitDVIR = ({navigation}) => {
                 justifyContent: 'center',
                 height: 100,
               }}>
-              <InputForm
+              <Input
                 // style={{flex: 1}}
                 autoCapitalize="none"
                 name="licensePlate"
@@ -63,16 +99,17 @@ const InitDVIR = ({navigation}) => {
               <Icon
                 name="send"
                 size={30}
-                onPress={() => {
+                onPress={async() => {
                   if (licensePlate.length < 1) {
                     setLicenseError(true);
                   } else {
                     // setStep(4);
+                    await AsyncStorage.setItem('plateNumber', licensePlate);
                     navigation.navigate('DVIRReady');
                   }
                 }}
                 color="#4CB75C"
-                style={{position: 'absolute', right: 15, top: 40}}
+                style={{position: 'absolute', right: 15, top: 30}}
               />
             </View>
           </View>
