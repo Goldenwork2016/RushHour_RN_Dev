@@ -150,6 +150,7 @@ const DriverMapView = ({navigation}) => {
           }}
           title={data.start_address}
           description={data.start_address}
+          key={index}
           onPress={() =>
             navigation.navigate('InitArrived', {orderStop: routes[index + 1]})
           }>
@@ -168,6 +169,7 @@ const DriverMapView = ({navigation}) => {
           // strokeColor="red"
           strokeColor="#3BC2DE"
           strokeWidth={5}
+          key={index}
           origin={{
             latitude: data.start_location.lat,
             longitude: data.start_location.lng,

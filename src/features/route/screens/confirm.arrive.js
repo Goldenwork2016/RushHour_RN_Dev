@@ -134,6 +134,7 @@ const ConfirmArrive = ({route,navigation}) => {
       return (
         // {index === 0 ? }
         <Marker
+        key={index}
           coordinate={{
             latitude: data.end_location.lat,
             longitude: data.end_location.lng,
@@ -158,6 +159,7 @@ const ConfirmArrive = ({route,navigation}) => {
       return (
         <MapViewDirections
           // strokeColor="red"
+          key={index}
           strokeColor="#3BC2DE"
           strokeWidth={5}
           origin={{

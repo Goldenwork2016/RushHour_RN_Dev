@@ -32,6 +32,7 @@ import {
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 
+import {AsyncStorage} from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../../dvir/components/botChatBubble';
 import BotChatBubbleNoAvatar from '../../dvir/components/bot.bubble.without.avatar';
 import BottomLeft from '../../../../assets/anglebottomleft.png';
@@ -43,22 +44,28 @@ import RNImageToPdf from 'react-native-image-to-pdf';
 import TopLeft from '../../../../assets/angletopleft.png';
 import TopRight from '../../../../assets/angletopright.png';
 import UserChatBubble from '../../account/components/chatbot/userChatBubble';
+import {constants} from './../../../core/constants';
 
 // import 'react-native-reanimated';
+
+
 
 const getWidth = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const OrderChatBot = ({navigation}) => {
+const OrderChatBot = ({route, navigation}) => {
   const [steps, setStep] = useState(1);
   const [isBarcode, setIsbarcode] = useState(false);
   const scrollViewRef = useRef();
+  const [scanCode, setScanCode] = useState('');
+  const [error, setError] = useState('');
 
   const [scanned, setScanned] = useState(null);
   const [doc1, setDoc1] = useState(null);
   const [doc2, setDoc2] = useState(null);
   const [doc3, setDoc3] = useState(null);
   const [doc4, setDoc4] = useState(null);
+  const {orderStop} = route.params;
   const takePhotoFromCameraScan = () => {
     ImagePicker.openCamera({
       compressImageMaxWidth: 300,
@@ -80,7 +87,7 @@ const OrderChatBot = ({navigation}) => {
       compressImageQuality: 0.7,
       multiple: false,
     }).then(async image => {
-      console.log(image.path.replace(/file:\/\//g,''));
+      console.log(image.path.replace(/file:\/\//g, ''));
       setDoc1(image.path);
       setStep(3);
     });
@@ -125,18 +132,30 @@ const OrderChatBot = ({navigation}) => {
       setStep(6);
     });
   };
-  const [scanCode, setScanCode] = useState('');
   const onSuccess = e => {
     setScanCode(e.data);
     console.log(e.data);
-    setIsbarcode(false);
-    setScanCode('');
-    setStep(2);
+    const orderNumber = orderStop.orderNumber;
+    orderStop.routeItems.forEach(item => {
+      if (orderNumber === e.data) {
+        setIsbarcode(false);
+        setStep(2);
+      } else {
+        setIsbarcode(false);
+        setStep(1);
+        setError('Invalid order code, please rescan');
+      }
+    });
   };
-  const createPdf = async (image4) => {
+  const createPdf = async image4 => {
     try {
       const options = {
-        imagePaths: [doc1.replace(/file:\/\//g,''), doc2.replace(/file:\/\//g,''), doc3.replace(/file:\/\//g,''), image4.replace(/file:\/\//g,'')],
+        imagePaths: [
+          doc1.replace(/file:\/\//g, ''),
+          doc2.replace(/file:\/\//g, ''),
+          doc3.replace(/file:\/\//g, ''),
+          image4.replace(/file:\/\//g, ''),
+        ],
         name: 'scanned_documents.pdf',
         quality: 0.7, // optional compression paramter
         targetPathRN: '/storage/emulated/0/Download/', // only for android version 9 and lower
@@ -144,6 +163,31 @@ const OrderChatBot = ({navigation}) => {
       const pdf = await RNImageToPdf.createPDFbyImages(options);
 
       console.log(pdf.filePath);
+      const token = await AsyncStorage.getItem('token');
+      const docFormdata = new FormData();
+      docFormdata.append('file', {
+        type: 'image/jpg',
+        uri: pdf.filePath,
+        name: pdf.filePath.split('/').pop(),
+      });
+      docFormdata.append('type', `${orderStop.orderNumber}`);
+      docFormdata.append('id', `${orderStop.orderNumber}`);
+      // https://beta.rushhourapp.com/api/v1/Attachments/upload/:entityType/:entityId
+      const uploadRes = await fetch(
+        constants.apiBaseUrl +
+          `Attachments/upload/${orderStop.orderNumber}/${orderStop.orderNumber}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Accept: 'text/plain',
+            Authorization: 'Bearer ' + token,
+          },
+          body: docFormdata,
+        },
+      );
+      const docUrl = await uploadRes.json();
+      console.log('res ' + docUrl);
     } catch (e) {
       console.log(e);
     }
@@ -157,6 +201,19 @@ const OrderChatBot = ({navigation}) => {
         [translationType]: fromValue,
       },
     };
+  };
+  const renderPallets = () => {
+    return orderStop.routeItems.map((data, index) => {
+      return (
+        <Text style={{color: 'white'}} key={index}>
+          {data.quantity} {data.orderItem.orderItemType}, Weight:{' '}
+          {data.orderItem.formatedWeight.replace('lb', '')}{' '}
+          {data.orderItem.formattedUnitOfMeasure === ''
+            ? 'lb'
+            : data.orderItem.formattedUnitOfMeasure}
+        </Text>
+      );
+    });
   };
   return (
     <View style={{flex: 1}}>
@@ -216,13 +273,10 @@ const OrderChatBot = ({navigation}) => {
             <View style={styles.spacer} />
             <BotChatBubble text="Hows it going?" />
             <BotChatBubbleNoAvatar text="Firstly, please confirm the order details" />
-            <UserChatBubble>
-              <Text style={{color: 'white'}}>
-                9 Pallets, Detail, Detail, Detail
-              </Text>
-            </UserChatBubble>
+            <UserChatBubble>{renderPallets()}</UserChatBubble>
             <View style={styles.spacer} />
             <BotChatBubble text="Please scan the barcodes on each pallet" />
+            {error !== '' ? <BotChatBubbleNoAvatar text={error} /> : null}
             <View style={styles.spacer} />
             {steps > 1 && (
               <View>

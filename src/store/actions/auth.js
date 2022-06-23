@@ -84,8 +84,8 @@ export const signup2 = (
       },
     );
     const driverImageUrl = await imageUploadRes.json();
-    console.log('hobby');
-    console.log(driverImageUrl.data);
+    // console.log('hobby');
+    // console.log(driverImageUrl.data);
     const response = await fetch(
       constants.apiBaseUrl + 'Drivers',
       {
