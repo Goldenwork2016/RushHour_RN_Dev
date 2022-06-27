@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-native/no-inline-styles */
 
 import {
@@ -26,13 +27,42 @@ const getWidth = Dimensions.get('window').width;
 
 const OrderDetail = ({route,navigation}) => {
   const scrollViewRef = useRef();
-  const [checkedPalled, setCheckedPalled] = useState(false);
   const [checkedDetail, setCheckedDetail] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const {orderStop} = route.params;
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+
+  const renderItems = () => {
+    return orderStop.routeItems.map((data, index) => {
+      const [checkedPalled, setCheckedPalled] = useState(false);
+      return (
+        <View style={styles.checkContainer} key={index}>
+            {checkedPalled ? (
+              <Icon
+                name="checkbox-outline"
+                size={40}
+                color={colors.brand.primary}
+                onPress={() => {
+                  setCheckedPalled(!checkedPalled);
+                }}
+              />
+            ) : (
+              <Icon
+                name="square"
+                size={40}
+                color="white"
+                onPress={() => {
+                  setCheckedPalled(!checkedPalled);
+                }}
+              />
+            )}
+            <Text style={styles.textBold}>{data.quantity} {data.orderItem.orderItemType}, Weight: {data.orderItem.formatedWeight.replace('lb', '')} {data.orderItem.formattedUnitOfMeasure === '' ? 'lb' : data.orderItem.formattedUnitOfMeasure}</Text>
+          </View>
+      );
+    });
+  };
   return (
     <Provider>
       <View style={styles.container}>
@@ -71,118 +101,9 @@ const OrderDetail = ({route,navigation}) => {
           <BotChatBubble text="Firstly, please confirm the order details" />
         </ScrollView>
         <View style={styles.action}>
-          <View style={styles.checkContainer}>
-            {checkedPalled ? (
-              <Icon
-                name="checkbox-outline"
-                size={40}
-                color={colors.brand.primary}
-                onPress={() => {
-                  setCheckedPalled(!checkedPalled);
-                }}
-              />
-            ) : (
-              <Icon
-                name="square"
-                size={40}
-                color="white"
-                onPress={() => {
-                  setCheckedPalled(!checkedPalled);
-                }}
-              />
-            )}
-            <Text style={styles.textBold}>9 Pallets</Text>
-          </View>
-          <View style={styles.checkContainer}>
-            {checkedDetail ? (
-              <Icon
-                name="checkbox-outline"
-                size={40}
-                color={colors.brand.primary}
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            ) : (
-              <Icon
-                name="square"
-                size={40}
-                color="white"
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            )}
-            <Text style={styles.textBold}>Details</Text>
-          </View>
-          <View style={styles.checkContainer}>
-            {checkedDetail ? (
-              <Icon
-                name="checkbox-outline"
-                size={40}
-                color={colors.brand.primary}
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            ) : (
-              <Icon
-                name="square"
-                size={40}
-                color="white"
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            )}
-            <Text style={styles.textBold}>Details</Text>
-          </View>
-          <View style={styles.checkContainer}>
-            {checkedDetail ? (
-              <Icon
-                name="checkbox-outline"
-                size={40}
-                color={colors.brand.primary}
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            ) : (
-              <Icon
-                name="square"
-                size={40}
-                color="white"
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            )}
-            <Text style={styles.textBold}>Details</Text>
-          </View>
-          <View style={styles.checkContainer}>
-            {checkedDetail ? (
-              <Icon
-                name="checkbox-outline"
-                size={40}
-                color={colors.brand.primary}
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            ) : (
-              <Icon
-                name="square"
-                size={40}
-                color="white"
-                onPress={() => {
-                  setCheckedDetail(!checkedDetail);
-                }}
-              />
-            )}
-            <Text style={styles.textBold}>Details</Text>
-          </View>
+          {renderItems()}
           <View style={{margin: 20}}>
-            <CancelButton text="Next"  onPress={()=> navigation.navigate('OrderChatBot')}/>
+            <CancelButton text="Next"  onPress={()=> navigation.navigate('OrderChatBot', {orderStop: orderStop})}/>
           </View>
         </View>
       </View>

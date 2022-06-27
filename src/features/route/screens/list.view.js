@@ -130,10 +130,10 @@ const DriverRouteList = ({navigation}) => {
             })
               .then(res => res.json())
               .then(res => {
-                if (res.routes.length === 0) {
-                  setDuration('N/A');
-                  // console.log('empty');
-                } else {
+                // if (res.routes.length === 0) {
+                //   setDuration('N/A');
+                //   // console.log('empty');
+                // } else {
                   // setDuration(res.routes[0].legs[0].duration.text);
                   if (res.routes[0].legs[0].duration.text === '1 min') {
                     setDuration('N/A');
@@ -142,7 +142,7 @@ const DriverRouteList = ({navigation}) => {
                   }
 
                   // console.log(res.routes[0].legs[0].duration.text);
-                }
+                // }
               })
               .catch(error => {
                 console.log(error);
@@ -238,6 +238,7 @@ const DriverRouteList = ({navigation}) => {
             <Divider />
           </View>
         )}
+        key={item => item.orderId}
         keyExtractor={(item, index) => index}
       />
     </View>

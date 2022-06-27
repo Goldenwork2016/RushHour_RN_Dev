@@ -34,7 +34,6 @@ const ConfirmModal = ({isVisible, hideModal, onPickPress, onCancelPress}) => {
           />
           <CancelButton text="Pickup/ delivery attempt unsuccessful" onPress={onCancelPress}/>
           </View>
-         
         </View>
       </Modal>
     </Portal>

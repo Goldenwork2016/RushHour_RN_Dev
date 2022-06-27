@@ -1,0 +1,88 @@
+<View style={styles.checkContainer}>
+            {checkedDetail ? (
+              <Icon
+                name="checkbox-outline"
+                size={40}
+                color={colors.brand.primary}
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            ) : (
+              <Icon
+                name="square"
+                size={40}
+                color="white"
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            )}
+            <Text style={styles.textBold}>Details</Text>
+          </View>
+          <View style={styles.checkContainer}>
+            {checkedDetail ? (
+              <Icon
+                name="checkbox-outline"
+                size={40}
+                color={colors.brand.primary}
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            ) : (
+              <Icon
+                name="square"
+                size={40}
+                color="white"
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            )}
+            <Text style={styles.textBold}>Details</Text>
+          </View>
+          <View style={styles.checkContainer}>
+            {checkedDetail ? (
+              <Icon
+                name="checkbox-outline"
+                size={40}
+                color={colors.brand.primary}
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            ) : (
+              <Icon
+                name="square"
+                size={40}
+                color="white"
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            )}
+            <Text style={styles.textBold}>Details</Text>
+          </View>
+          <View style={styles.checkContainer}>
+            {checkedDetail ? (
+              <Icon
+                name="checkbox-outline"
+                size={40}
+                color={colors.brand.primary}
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            ) : (
+              <Icon
+                name="square"
+                size={40}
+                color="white"
+                onPress={() => {
+                  setCheckedDetail(!checkedDetail);
+                }}
+              />
+            )}
+            <Text style={styles.textBold}>Details</Text>
+          </View>
