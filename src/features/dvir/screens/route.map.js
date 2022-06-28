@@ -161,22 +161,22 @@ const TruckRoute = ({navigation}) => {
               showsUserLocation={true}
               //   customMapStyle={ mapStandardStyle}
               region={{
-                // latitude: parseFloat(myLat),
-                // longitude: parseFloat(myLon),
-                latitude: 40.72218,
-                longitude: -73.849304,
+                latitude: parseFloat(myLat),
+                longitude: parseFloat(myLon),
+                // latitude: 40.72218,
+                // longitude: -73.849304,
                 latitudeDelta: 0.5,
                 longitudeDelta: 0.5,
               }}>
               <Marker
                 coordinate={{
-                  // latitude: parseFloat(myLat),
-                  // longitude: parseFloat(myLon),
-                  latitude: 40.72218,
-                  longitude: -73.849304,
+                  latitude: parseFloat(myLat),
+                  longitude: parseFloat(myLon),
+                  // latitude: 40.72218,
+                  // longitude: -73.849304,
                 }}
-                title="Test Title"
-                description="This is the test description">
+                title=""
+                description="">
                 <View style={styles.markerCon}>
                   <Image
                     source={require('../../../../assets/marker.png')}
@@ -226,10 +226,10 @@ const TruckRoute = ({navigation}) => {
                 strokeColor="#3BC2DE"
                 strokeWidth={5}
                 origin={{
-                  // latitude: parseFloat(myLat),
-                  // longitude: parseFloat(myLon),
-                  latitude: 40.72218,
-                  longitude: -73.849304,
+                  latitude: parseFloat(myLat),
+                  longitude: parseFloat(myLon),
+                  // latitude: 40.72218,
+                  // longitude: -73.849304,
                 }}
                 // origin={{latitude: myLoc.latitude, longitude: myLoc.longitude}}
                 destination={{

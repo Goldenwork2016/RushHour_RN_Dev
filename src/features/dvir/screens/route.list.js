@@ -108,12 +108,8 @@ const RouteList = ({navigation}) => {
             setMyPlaceId(response.results[0].place_id);
 
             const url2 =
-              'https://maps.googleapis.com/maps/api/directions/json?destination=place_id%' +
-              routePlaceId +
-              '&origin=place_id%' +
-              myPlaceId +
-              '&key=' +
-              constants.googleApiKey;
+            `https://maps.googleapis.com/maps/api/directions/json?destination=${routePlaceId}&origin=${currentLatitude},${currentLongitude}&key=${constants.googleApiKey}`;
+
             fetch(url2, {
               method: 'GET',
               body: JSON.stringify(),

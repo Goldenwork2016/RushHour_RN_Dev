@@ -110,12 +110,7 @@ const DriverRouteList = ({navigation}) => {
             // 40.72218,-73.849304,
             // https://maps.googleapis.com/maps/api/directions/json?destination=Millennium%20Ct,%20Columbus,%20OH%2043219,%20USA&origin=38.8758736,-117.7098362&key=AIzaSyD_ZJPQLldJW_XGdGiadvdzlrUq6-v85FI
             const url2 =
-              'https://maps.googleapis.com/maps/api/directions/json?destination=' +
-              routePlaceId +
-              '&origin=40.72218,-73.849304' +
-              // myPlaceId +
-              '&key=' +
-              constants.googleApiKey;
+              `https://maps.googleapis.com/maps/api/directions/json?destination=${routePlaceId}&origin=${currentLatitude},${currentLongitude}&key=${constants.googleApiKey}`;
               // const url2 =
               // 'https://maps.googleapis.com/maps/api/directions/json?destination=place_id%' +
               // routePlaceId +
@@ -123,7 +118,7 @@ const DriverRouteList = ({navigation}) => {
               // // myPlaceId +
               // 'ChIJQW01FyRewokRiDQuLX2jvv0&key=' +
               // constants.googleApiKey;
-              console.log(url2);
+              // console.log(url2);
             fetch(url2, {
               method: 'GET',
               body: JSON.stringify(),
