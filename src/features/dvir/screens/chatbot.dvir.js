@@ -41,6 +41,10 @@ const DVIRChatBot = ({navigation}) => {
   const [plateNumber, setPlateNumber] = useState('');
   const [fName, setFName] = useState('');
   const [isSign, setIsSign] = useState(false);
+  
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const takePhotoFromCameraFront = () => {
     ImagePicker.openCamera({
@@ -113,9 +117,6 @@ const DVIRChatBot = ({navigation}) => {
     console.log('Empty');
   };
 
-  const [error, setError] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   useEffect(() => {
     _firstName();
     if (error) {

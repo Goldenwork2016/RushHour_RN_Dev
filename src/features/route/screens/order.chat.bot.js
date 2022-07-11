@@ -2,6 +2,9 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
 
+import * as RNFS from 'react-native-fs';
+
+import {AirbnbRating, Rating} from 'react-native-ratings';
 import {
   AngleBottomLeft,
   AngleBottomRight,
@@ -33,7 +36,8 @@ import {
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 
-import {AsyncStorage} from '@react-native-async-storage/async-storage';
+import {ActivityIndicator} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BotChatBubble from '../../dvir/components/botChatBubble';
 import BotChatBubbleNoAvatar from '../../dvir/components/bot.bubble.without.avatar';
 import BotChatCon from '../components/botCon';
@@ -44,8 +48,10 @@ import ButtonSubmit from './../../dvir/components/button';
 import CancelButton from '../components/cancel.button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
+import PickPicture from './../../account/components/chatbot/choosepicture';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import RNImageToPdf from 'react-native-image-to-pdf';
+import Signature from 'react-native-signature-canvas';
 import TopLeft from '../../../../assets/angletopleft.png';
 import TopRight from '../../../../assets/angletopright.png';
 import UserChatBubble from '../../account/components/chatbot/userChatBubble';
@@ -74,7 +80,41 @@ const OrderChatBot = ({route, navigation}) => {
   const [doc2, setDoc2] = useState(null);
   const [doc3, setDoc3] = useState(null);
   const [doc4, setDoc4] = useState(null);
+
+  const [sign, setSign] = useState(null);
+  const [plateNumber, setPlateNumber] = useState('');
+  const [fName, setFName] = useState('');
+  const [isSign, setIsSign] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [receipt, setReceipt] = useState();
   const {orderStop} = route.params;
+  const takePhotoFromCamera = () => {
+    ImagePicker.openCamera({
+      compressImageMaxWidth: 300,
+      compressImageMaxHeight: 300,
+      cropping: true,
+      compressImageQuality: 0.7,
+      multiple: false,
+    }).then(async image => {
+      // console.log(image.path);
+      setReceipt(image.path);
+      setStep(12);
+    });
+  };
+  const choosePhotoFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+      mediaType: 'photo',
+      multiple: false,
+      compressImageQuality: 0.7,
+    }).then(image => {
+      // console.log(image);
+      setReceipt(image.path);
+      setStep(12);
+    });
+  };
   const takePhotoFromCameraScan = () => {
     ImagePicker.openCamera({
       compressImageMaxWidth: 300,
@@ -156,6 +196,9 @@ const OrderChatBot = ({route, navigation}) => {
       }
     });
   };
+ const ratingCompleted = (rating)=> {
+    console.log('Rating is: ' + rating);
+  };
   const createPdf = async image4 => {
     try {
       const options = {
@@ -211,6 +254,80 @@ const OrderChatBot = ({route, navigation}) => {
       },
     };
   };
+  const sendReceipt = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const response = await fetch(constants.apiBaseUrl + 'Accounting/invoice', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        customer: orderStop.customer,
+      }),
+    });
+    if (!response.ok) {
+      const errorResData = await response.json();
+      const errorId = errorResData.messages[0];
+      console.log(errorResData);
+      throw new Error(errorId);
+    }
+    const resData = await response.json();
+    setStep(6);
+    console.log(resData);
+  };
+  const payment = async (method) => {
+    const token = await AsyncStorage.getItem('token');
+    const response = await fetch(constants.apiBaseUrl + 'Accounting/Payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        orderId: orderStop.orderId,
+        paymentId: 27107182,
+        paymentAmount: 10,
+        paymentMethodType: method,
+        customer: orderStop.customer,
+        paymentMethod: {
+          paymentMethodId: -24372959,
+          customerId: orderStop.customer.customerId,
+        },
+        appliedPayments: [],
+      }),
+    });
+    if (!response.ok) {
+      const errorResData = await response.json();
+      const errorId = errorResData.messages[0];
+      console.log(errorResData);
+      throw new Error(errorId);
+    }
+    const resData = await response.json();
+    setStep(6);
+    console.log(resData);
+  };
+  const handleOK = async signData => {
+    console.log(signData);
+    const path = RNFS.DownloadDirectoryPath + '/sign.png';
+    await RNFS.writeFile(
+      path,
+      signData.replace('data:image/png;base64,', ''),
+      'base64',
+    ).then(async image => {
+      setSign('file:///storage/emulated/0/Download/sign.png');
+
+      setError(null);
+      setIsSign(false);
+      // setIsLoading(true);
+    });
+  };
+
+  const handleEmpty = () => {
+    console.log('Empty');
+  };
   const renderPallets = () => {
     return orderStop.routeItems.map((data, index) => {
       return (
@@ -224,7 +341,29 @@ const OrderChatBot = ({route, navigation}) => {
       );
     });
   };
-  return (
+  const style = `.m-signature-pad--footer
+    .button {
+      background-color: #4CB75C;
+      color: #FFF;
+    }`;
+  return isSign ? (
+    <View style={{flex: 1}}>
+      <View style={styles.spacer} />
+      {/* {isLoading ? (
+        <ActivityIndicator size="small" color="#4CB75C" />
+      ) : ( */}
+      <Signature
+        style={{justifyContent: 'flex-end'}}
+        onOK={handleOK}
+        onEmpty={handleEmpty}
+        descriptionText="Inspection Signature Image"
+        clearText="Clear"
+        confirmText="Confirm"
+        webStyle={style}
+      />
+      {/* )} */}
+    </View>
+  ) : (
     <View style={{flex: 1}}>
       {isBarcode ? (
         <BarCodeScanner>
@@ -419,8 +558,107 @@ const OrderChatBot = ({route, navigation}) => {
                 <BotChatConOutline>
                   <Text style={styles.text}>Choose a payment method</Text>
                 </BotChatConOutline>
+                {/* <BotChatConOutline>
+                  <Text style={styles.text}>
+                    Please have The costumer sign below
+                  </Text>
+                </BotChatConOutline> */}
               </View>
             )}
+            {/* {steps > 8 && (
+              <View style={{justifyContent: 'space-between'}}>
+                <View style={styles.floatRight}>
+                  <Image
+                    source={require('../../../../assets/signature.png')}
+                    style={{
+                      width: 150,
+                      height: 150,
+                    }}
+                    resizeMode="cover"
+                  />
+                </View>
+                <View>
+                  <BotChatCon>
+                    <Text style={styles.text}>
+                      Did you lay out any money along the way?
+                    </Text>
+                  </BotChatCon>
+                </View>
+              </View>
+            )}
+            {steps > 9 && (
+              <View style={{justifyContent: 'space-between'}}>
+                <View style={styles.floatRight}>
+                  <UserChatBubble>
+                    <Text style={{color: 'white'}}>Yes! I layed out money</Text>
+                  </UserChatBubble>
+                </View>
+                <View style={styles.spacer} />
+                <View>
+                  <BotChatCon>
+                    <Text style={styles.text}>
+                      Where did you lay out money?
+                    </Text>
+                  </BotChatCon>
+                </View>
+              </View>
+            )}
+            {steps > 10 && (
+              <View style={{justifyContent: 'space-between'}}>
+                <View style={styles.floatRight}>
+                  <UserChatBubble>
+                    <Text style={{color: 'white'}}>At the airport</Text>
+                  </UserChatBubble>
+                </View>
+                <View style={styles.spacer} />
+                <View>
+                  <BotChatCon>
+                    <Text style={styles.text}>
+                      Thank you for laying out money, please attached an image
+                      of your reciept
+                    </Text>
+                  </BotChatCon>
+                </View>
+              </View>
+            )}
+            {steps > 11 && (
+              <View style={{justifyContent: 'space-between'}}>
+                <View style={styles.floatRight}>
+                  <Image
+                    source={{uri: receipt}}
+                    style={{
+                      width: 150,
+                      height: 150,
+                    }}
+                    resizeMode="cover"
+                  />
+                </View>
+                <View style={styles.spacer} />
+                <View>
+                  <BotChatCon>
+                    <Text style={styles.text}>
+                      You will be refunded shhortly.
+                    </Text>
+                  </BotChatCon>
+                  <BotChatCon>
+                    <Text style={styles.text}>
+                      How would you rate this location?
+                    </Text>
+                  </BotChatCon>
+                </View>
+                <View>
+                  <Rating
+                    type="custom"
+                    ratingColor="#4CB75C"
+                    ratingBackgroundColor="#c8c7c8"
+                    ratingCount={5}
+                    imageSize={30}
+                    onFinishRating={ratingCompleted}
+                    style={{paddingVertical: 10}}
+                  />
+                </View>
+              </View>
+            )} */}
           </ScrollView>
           {steps === 1 && (
             <View
@@ -433,6 +671,7 @@ const OrderChatBot = ({route, navigation}) => {
               <TouchableOpacity
                 onPress={() => {
                   setIsbarcode(true);
+                  // setStep(8);
                 }}>
                 <View style={styles.circleCon}>
                   <Image
@@ -581,14 +820,25 @@ const OrderChatBot = ({route, navigation}) => {
                 </View>
               </View>
               <View style={styles.spacer} />
-              <ButtonSubmit text="Proceed" onPress={() => null} />
+              <ButtonSubmit
+                text="Proceed"
+                onPress={() => {
+                  payment(2);
+                }}
+              />
             </View>
           )}
           {steps === 7 && action === 'Cash' && (
             <View style={styles.action}>
-              <ButtonSubmit text="Accept $350 Cash" onPress={() => null} />
+              <ButtonSubmit
+                text="Accept $350 Cash"
+                onPress={() => {
+                  payment(1);
+                }}
+              />
             </View>
           )}
+
           {steps === 7 && action === 'Invoice' && (
             <View style={styles.action}>
               <Text style={styles.textBold}>Send invoice to...</Text>
@@ -604,9 +854,12 @@ const OrderChatBot = ({route, navigation}) => {
                 />
               </View>
               <View style={styles.spacer} />
-              <ButtonSubmit text="Send" onPress={() => null} />
+              <ButtonSubmit text="Send" onPress={() => {
+               setStep(8);
+                }} />
             </View>
           )}
+          {/* {steps === 8 && <View style={styles.action}></View>} */}
           {steps === 8 && (
             <View style={styles.action}>
               <Text style={styles.textBold}>Email Receipt?</Text>
@@ -631,7 +884,10 @@ const OrderChatBot = ({route, navigation}) => {
                 <Icon
                   name="send"
                   size={30}
-                  onPress={() => {}}
+                  onPress={() => {
+                    console.log('Hello');
+                    sendReceipt();
+                  }}
                   color="#4CB75C"
                   style={{position: 'absolute', right: 15, top: 10}}
                 />
@@ -640,6 +896,7 @@ const OrderChatBot = ({route, navigation}) => {
               <CancelButton text="No" onPress={() => null} />
             </View>
           )}
+
         </View>
       )}
     </View>

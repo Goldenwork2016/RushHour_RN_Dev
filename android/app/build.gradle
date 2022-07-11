@@ -129,13 +129,13 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     
-    compileSdkVersion 31
+    compileSdkVersion 30
     // compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "com.rushhour_rn_dev"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true

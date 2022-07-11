@@ -37,6 +37,7 @@
     "react-native-paper": "^4.11.2",
     "react-native-permissions": "^3.3.0",
     "react-native-qrcode-scanner": "^1.5.5",
+    "react-native-ratings": "^8.1.0",
     "react-native-safe-area-context": "^3.4.1",
     "react-native-screens": "^3.12.0",
     "react-native-signature-canvas": "^4.3.0",

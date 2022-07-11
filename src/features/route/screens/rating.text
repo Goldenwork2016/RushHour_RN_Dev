@@ -1,0 +1,96 @@
+{steps === 8 && (
+            <View style={styles.action}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  // borderLeftWidth: 5,
+                  borderRadius: 20,
+                  paddingHorizontal: 10,
+                  height: 100,
+                }}>
+                <TextInput
+                  autoCapitalize="none"
+                  autoComplete="off"
+                  style={{width: getWidth * 0.86}}
+                  required
+                  value={holder}
+                  multiline={true}
+                  onChangeText={text => setHolder(text)}
+                  placeholder=""
+                />
+                <Icon
+                  name="send"
+                  size={30}
+                  onPress={() => setStep(9)}
+                  color="#4CB75C"
+                  style={{position: 'absolute', right: 15, top: 50}}
+                />
+              </View>
+              {/* <TouchableOpacity
+            onPress={
+              () => setIsSign(true)
+              // navigation.navigate('Signature')
+            }>
+            <View style={styles.circleCon}>
+              <Icon name="create-outline" size={30} color="#4CB75C" />
+            </View>
+          </TouchableOpacity> */}
+            </View>
+          )}
+          {steps === 9 && (
+            <View style={styles.action}>
+              <View style={styles.spacer} />
+              <CancelButton
+                onPress={() => {
+                  setStep(10);
+                }}
+                text="Yes"
+              />
+              <CancelButton
+                onPress={() => {
+                  setStep(10);
+                  // setAction('Invoice');
+                }}
+                text="No"
+              />
+            </View>
+          )}
+          {steps === 10 && (
+            <View style={styles.action}>
+              <View style={styles.spacer} />
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  // borderLeftWidth: 5,
+                  borderRadius: 20,
+                  paddingHorizontal: 10,
+                  // height: 100,
+                }}>
+                <TextInput
+                  autoCapitalize="none"
+                  autoComplete="off"
+                  style={{width: getWidth * 0.86}}
+                  required
+                  value={holder}
+                  multiline={true}
+                  onChangeText={text => setHolder(text)}
+                  placeholder=""
+                />
+                <Icon
+                  name="send"
+                  size={30}
+                  onPress={() => setStep(11)}
+                  color="#4CB75C"
+                  style={{position: 'absolute', right: 15, top: 10}}
+                />
+              </View>
+            </View>
+          )}
+          {steps === 11 && (
+            <PickPicture
+              takePhotoFromCamera={() => {
+                takePhotoFromCamera();
+              }}
+              choosePhotoFromLibrary={choosePhotoFromLibrary}
+            />
+          )}
