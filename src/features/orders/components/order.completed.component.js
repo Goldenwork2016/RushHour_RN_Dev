@@ -1,7 +1,6 @@
+import OrderModal from './order.modal.component';
 import React from 'react';
 import styled from 'styled-components/native';
-
-import OrderModal from './order.modal.component';
 
 const OrderListContainer = styled.View`
   flex-direction: column;
@@ -46,7 +45,7 @@ const ButtonText = styled.Text`
 `;
 
 const OrderCompleted = ({item}) => {
-  const {orderId} = item;
+  // const {orderId} = item;
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
@@ -55,14 +54,17 @@ const OrderCompleted = ({item}) => {
   return (
     <OrderListContainer>
       <OrderInfo>
-        <UserName>Order {orderId}</UserName>
+        <UserName>Order #{item.orderId}</UserName>
       </OrderInfo>
       <OrderInfo>
-        <AddreasText>7958 Swift Village {'\n'} Belle Umo</AddreasText>
+        <AddreasText>
+          {item.orderStops[0].address.fullAddress} {'\n'}{' '}
+          {item.customer.customerName}
+        </AddreasText>
       </OrderInfo>
       <OrderInfo>
         <ButtonEdit>
-          <ButtonText>edit</ButtonText>
+          <ButtonText>Edit</ButtonText>
         </ButtonEdit>
 
         <ButtonEdit onPress={showModal}>

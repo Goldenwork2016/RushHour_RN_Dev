@@ -140,9 +140,9 @@ const RatingIcon = styled(Icon)`
 `;
 
 const OrderModal = ({visible, hideModal, item}) => {
-  const {orderId, payment, rating} = item;
+  // const {orderId, payment, rating} = item;
 
-  const ratingArray = Array.from(new Array(Math.floor(rating)));
+  const ratingArray = Array.from(new Array(Math.floor(5)));
 
   return (
     <Portal>
@@ -164,8 +164,8 @@ const OrderModal = ({visible, hideModal, item}) => {
             <ModalContainer>
               <ModalHeader>
                 <HeaderGroup>
-                  <Address>Belle Umo</Address>
-                  <OrderId>{orderId}</OrderId>
+                  <Address>{item.customer.customerName}</Address>
+                  <OrderId>#{item.orderId}</OrderId>
                 </HeaderGroup>
                 <HeaderGroup>
                   <OnTouch>
@@ -186,11 +186,13 @@ const OrderModal = ({visible, hideModal, item}) => {
                 <SectionTitle>Details</SectionTitle>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText>7958 Swift Village</ListText>
+                  <ListText>{item.orderStops[0].address.fullAddress}</ListText>
                 </ItemList>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText>9 Pallets</ListText>
+                  <ListText>
+                    {item.orderItems[0].orderItemStops[0].quantity} Pallets
+                  </ListText>
                 </ItemList>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
@@ -204,7 +206,7 @@ const OrderModal = ({visible, hideModal, item}) => {
                 <SectionTitle>Payment Details</SectionTitle>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText
+                  {/* <ListText
                     style={[
                       payment === 'Paid'
                         ? {
@@ -214,7 +216,7 @@ const OrderModal = ({visible, hideModal, item}) => {
                         : {color: 'red', fontWeight: 'bold'},
                     ]}>
                     {payment}
-                  </ListText>
+                  </ListText> */}
                 </ItemList>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
@@ -254,7 +256,7 @@ const OrderModal = ({visible, hideModal, item}) => {
               </Section>
               <Section>
                 <SectionTitle>
-                  This location was given a {rating} star rating
+                  This location was given a {5} star rating
                 </SectionTitle>
                 <Rating>
                   {ratingArray.map((r, i) => (

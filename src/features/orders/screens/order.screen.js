@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
 import {Button, Modal, Portal, Provider} from 'react-native-paper';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import HeaderTab from '../components/tap.order.component';
 import Icon from 'react-native-vector-icons/Ionicons';
 import OrderCompleted from '../components/order.completed.component';
 import OrderList from '../components/orderlist.component';
+import apiInstance from '../../../api/axios';
 import {colors} from '../../../infrastructure/theme/colors';
 import {space} from '../../../infrastructure/theme/spacing';
 import styled from 'styled-components/native';
@@ -62,63 +64,34 @@ const ListItem = styled(FlatList).attrs({
   paddingMargin: 100,
 })``;
 
-const OrderScreen = () => {
+const OrderScreen = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const onChangeSearch = query => setSearchQuery(query);
   const [tab, setTab] = useState(1);
+  const [orders, setOrders] = useState();
+  useEffect(() => {
+    let isMounted = true;
+    // const controller = AbortController();
 
-  const DATA = [
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Paid',
-      rating: 5,
-    },
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Unpaid',
-      rating: 3,
-    },
-    {
-      orderId: '#00769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Paid',
-      rating: 4,
-    },
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Paid',
-      rating: 2,
-    },
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Paid',
-      rating: 5,
-    },
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Paid',
-      rating: 5,
-    },
-    {
-      orderId: '#15769839',
-      amount: 130,
-      addres: '7958 Swift Village',
-      payment: 'Unpaid',
-      rating: 5,
-    },
-  ];
-  const [data, setData] = useState(DATA);
+    const getOrders = async () => {
+      try {
+        const response = await apiInstance.get(
+          'Orders/OrderList?Page=1&ItemsPerPage=25&IsOrder=true&SortBy=DEFAULT&SortDirection=Descending&OrderStatus=Order',
+        );
+        // console.log(response.data.data.data);
+        const data = response.data.data.list;
+        console.log(data);
+        isMounted && setOrders(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getOrders();
+    return () => {
+      isMounted = false;
+      // controller.abort();
+    };
+  }, []);
 
   return (
     <Provider>
@@ -142,8 +115,10 @@ const OrderScreen = () => {
             <ListItem
               ListFooterComponent={<View />}
               ListFooterComponentStyle={{height: 300}}
-              data={data}
-              renderItem={({item}) => <OrderList item={item} />}
+              data={orders}
+              renderItem={({item}) => (
+                <OrderList item={item} navigation={navigation} />
+              )}
             />
           </OrderListContainer>
         </MainContainer>
@@ -164,7 +139,7 @@ const OrderScreen = () => {
             <ListItem
               ListFooterComponent={<View />}
               ListFooterComponentStyle={{height: 280}}
-              data={data}
+              data={orders}
               renderItem={({item}) => <OrderCompleted item={item} />}
             />
           </OrderListContainer>

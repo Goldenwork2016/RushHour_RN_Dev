@@ -98,7 +98,7 @@ const ContactConatiner = styled.View`
 `;
 
 const OrderDetailModal = ({visible, hideModal, item}) => {
-  const {orderId, payment} = item;
+  // const {orderId, payment} = item;
 
   return (
     <Portal>
@@ -120,23 +120,25 @@ const OrderDetailModal = ({visible, hideModal, item}) => {
             <ModalContainer>
               <ModalHeader>
                 <HeaderGroup>
-                  <Address>Belle Umo</Address>
-                  <OrderId>{orderId}</OrderId>
+                  <Address>{item.customer.customerName}</Address>
+                  <OrderId>#{item.orderId}</OrderId>
                 </HeaderGroup>
               </ModalHeader>
               <Section>
                 <SectionTitle>Details</SectionTitle>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText>7958 Swift Village</ListText>
+                  <ListText>{item.orderStops[0].address.fullAddress}</ListText>
                 </ItemList>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText>9 Pallets</ListText>
+                  <ListText>
+                    {item.orderItems[0].orderItemStops[0].quantity} Pallets
+                  </ListText>
                 </ItemList>
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText
+                  {/* <ListText
                     style={[
                       payment === 'Paid'
                         ? {
@@ -146,7 +148,7 @@ const OrderDetailModal = ({visible, hideModal, item}) => {
                         : {color: 'red', fontWeight: 'bold'},
                     ]}>
                     {payment}
-                  </ListText>
+                  </ListText> */}
                 </ItemList>
               </Section>
               <Section>
@@ -154,7 +156,7 @@ const OrderDetailModal = ({visible, hideModal, item}) => {
 
                 <ItemList>
                   <BulletText>{'\u2022'}</BulletText>
-                  <ListText>7958 Swift Village</ListText>
+                  <ListText>{item.orderStops[0].address.fullAddress}</ListText>
                 </ItemList>
               </Section>
               <ContactConatiner>

@@ -50,8 +50,8 @@ const UpaidTexxt = styled.Text`
   font-size: ${props => props.theme.fontSizes.body};
 `;
 
-const OrderList = ({item}) => {
-  const {orderId, address, amount, payment} = item;
+const OrderList = ({item, navigation}) => {
+  // const {orderId, address, amount, payment} = item;
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
@@ -60,22 +60,23 @@ const OrderList = ({item}) => {
   return (
     <OrderListContainer>
       <OrderInfo>
-        <UserName>Order {orderId}</UserName>
-        <ListText>Amount: {amount}</ListText>
+        <UserName>Order #{item.orderId}</UserName>
+        <ListText>Amount: {item.price}</ListText>
       </OrderInfo>
       <OrderInfo>
         <ListText style={{marginTop: 12}}>
-          7958 Swift Village {'\n'} Belle Umo
+          {item.orderStops[0].address.fullAddress} {'\n'}{' '}
+          {item.customer.customerName}
         </ListText>
-        {payment === 'Paid' ? (
+        {/* {payment === 'Paid' ? (
           <StatusText>{payment}</StatusText>
         ) : (
           <UpaidTexxt>{payment}</UpaidTexxt>
-        )}
+        )} */}
       </OrderInfo>
       <OrderInfo>
         <ButtonEdit>
-          <ButtonText>edit</ButtonText>
+          <ButtonText>Edit</ButtonText>
         </ButtonEdit>
         <ButtonEdit onPress={showModal}>
           <ButtonText>View Details</ButtonText>

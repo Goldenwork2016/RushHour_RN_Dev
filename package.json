@@ -17,6 +17,7 @@
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
+    "axios": "^0.27.2",
     "geolib": "^3.3.3",
     "jetifier": "^2.0.0",
     "moment": "^2.29.1",
