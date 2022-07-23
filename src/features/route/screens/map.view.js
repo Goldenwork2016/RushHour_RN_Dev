@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-unused-vars */
 
@@ -18,8 +18,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import React, {useEffect} from 'react';
+import MapView, {
+  AnimatedRegion,
+  Marker,
+  PROVIDER_GOOGLE,
+  Polyline,
+} from 'react-native-maps';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {ActivityIndicator} from 'react-native';
 import ArrivedModal from '../components/modal';
@@ -29,8 +34,6 @@ import MapViewDirections from 'react-native-maps-directions';
 import {Provider} from 'react-native-paper';
 import RouteLoading from './../../../components/loading/routeLoading';
 import {constants} from './../../../core/constants';
-import {useRef} from 'react';
-import {useState} from 'react';
 
 // import GetLocation from 'react-native-get-location';
 
@@ -39,6 +42,7 @@ import {useState} from 'react';
 const getWidth = Dimensions.get('window').width;
 const getHeight = Dimensions.get('window').height;
 const DriverMapView = ({navigation}) => {
+  const mapRef = useRef(null);
   const [option, setOption] = useState('map');
   const [legs, setLegs] = useState([]);
   const [myLoc, setMyLoc] = useState({});
@@ -48,7 +52,8 @@ const DriverMapView = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [routes, setRoutes] = useState([]);
   const [visible, setVisible] = useState(false);
-  const intervalRef = useRef();
+  // const intervalRef = useRef();
+  const [currentRegion, setCurrentRegion] = useState(null);
   const fetchRoutes = async () => {
     const token = await AsyncStorage.getItem('token');
     var apiUrl = constants.apiBaseUrl + 'Routes/Current';
@@ -105,14 +110,21 @@ const DriverMapView = ({navigation}) => {
   };
 
   const getOneTimeLocation = () => {
-    Geolocation.getCurrentPosition(
+    Geolocation.watchPosition(
       //Will give you the current location
       position => {
+        setCurrentRegion({
+          latitude: JSON.stringify(position.coords.longitude),
+          longitude: JSON.stringify(position.coords.latitude),
+          latitudeDelta: 0.004,
+          longitudeDelta: 0.004,
+        });
         const currentLongitude = JSON.stringify(position.coords.longitude);
         const currentLatitude = JSON.stringify(position.coords.latitude);
         setMyLon(currentLongitude);
         setMyLat(currentLatitude);
         fetchRoutes();
+        mapRef.current.animateToRegion(currentRegion, 3 * 1000);
       },
       error => {
         console.log('error ' + error.message);
@@ -126,14 +138,6 @@ const DriverMapView = ({navigation}) => {
   };
   useEffect(() => {
     requestLocationPermission();
-    // intervalRef.current = setInterval(fetchRoutes, 5000);
-
-    // Clear the interval when this hook/component unmounts so it doesn't keep
-    // running when this component is gone.
-    // return () => {
-    //   clearInterval(intervalRef.current);
-    // };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   setTimeout(() => {
     setIsLoading(false);
@@ -184,6 +188,16 @@ const DriverMapView = ({navigation}) => {
       );
     });
   };
+  // setUserLocation(coordinate){
+  //   //alert("User location changed MAP SHOULDNT MOVE")
+  //   setCurrentRegion( {
+  //       latitude: coordinate.latitude,
+  //       longitude: coordinate.longitude,
+  //       latitudeDelta: 0.004,
+  //       longitudeDelta: 0.004
+  //     }
+  //   )
+  // }
   return (
     <SafeAreaView style={{flex: 1}}>
       {isLoading ? (
@@ -226,18 +240,23 @@ const DriverMapView = ({navigation}) => {
             <MapView
               provider={PROVIDER_GOOGLE} // remove if not using Google Maps
               style={styles.map}
+              followsUserLocation={true}
               showsUserLocation={true}
-              ref={intervalRef}
+              ref={mapRef}
+              // onUserLocationChange
               //   customMapStyle={ mapStandardStyle}
-              region={{
-                latitude: parseFloat(myLat),
-                longitude: parseFloat(myLon),
-                // latitude: 40.72218,
-                // longitude: -73.849304,
-                latitudeDelta: 0.9,
-                longitudeDelta: 0.9,
-              }}>
-              <Marker
+              region={
+                currentRegion
+                //   {
+                //   latitude: parseFloat(myLat),
+                //   longitude: parseFloat(myLon),
+                //   // latitude: 40.72218,
+                //   // longitude: -73.849304,
+                //   latitudeDelta: 0.0,
+                //   longitudeDelta: 0.0,
+                // }
+              }>
+              {/* <Marker.Animated
                 coordinate={{
                   // latitude: 40.72218,
                   // longitude: -73.849304,
@@ -252,7 +271,7 @@ const DriverMapView = ({navigation}) => {
                     style={styles.markerImage}
                   />
                 </View>
-              </Marker>
+              </Marker.Animated> */}
               {renderMap()}
               <Marker
                 coordinate={{
@@ -273,32 +292,6 @@ const DriverMapView = ({navigation}) => {
                   </View>
                 </TouchableOpacity>
               </Marker>
-              {/* <Marker
-                coordinate={{
-                  latitude: legs[0].end_location.lat,
-                  longitude: legs[0].end_location.lng,
-                }}
-                title={legs[0].end_address}
-                description={legs[0].end_address}>
-                <View style={styles.markerCon2}>
-                  <Text style={{color: 'black'}}>2</Text>
-                </View>
-              </Marker> */}
-              {/* <MapViewDirections
-                // strokeColor="red"
-                strokeColor="#3BC2DE"
-                strokeWidth={5}
-                origin={{
-                  latitude: legs[0].start_location.lat,
-                  longitude: legs[0].start_location.lng,
-                }}
-                // origin={{latitude: myLoc.latitude, longitude: myLoc.longitude}}
-                destination={{
-                  latitude: legs[0].end_location.lat,
-                  longitude: legs[0].end_location.lng,
-                }}
-                apikey={constants.googleApiKey}
-              /> */}
               {renderDirection()}
               <MapViewDirections
                 // strokeColor="red"
@@ -314,23 +307,15 @@ const DriverMapView = ({navigation}) => {
                 destination={{
                   latitude: legs[0].start_location.lat,
                   longitude: legs[0].start_location.lng,
+                  // latitude: 7.376736, //ibadan lat
+                  // longitude: 3.939786, //ibadan lon
                 }}
                 apikey={constants.googleApiKey}
               />
-              {/* <Polyline
-          coordinates={[
-            {latitude: 37.78825, longitude: -122.4324},
-            {latitude: 37.7896386, longitude: -122.421646},
-          ]}
-          strokeColor="#3BC2DE" // fallback for when `strokeColors` is not supported by the map-provider
-          strokeWidth={6}
-        /> */}
             </MapView>
             // <View/>
           )}
-          {/* <TouchableOpacity onPress={() => navigation.navigate('InitArrived')}>
-            <Text>Arrived</Text>
-          </TouchableOpacity> */}
+          {/* bottom */}
         </View>
       )}
     </SafeAreaView>
